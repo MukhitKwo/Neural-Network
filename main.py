@@ -1,25 +1,26 @@
 import pygame
 import sys
+from player import  Player
+from fruit import Fruit
 
-# Initialize Pygame
 pygame.init()
 
 # Window settings
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("My Game")
+pygame.display.set_caption("Neural Network")
 
-# Clock for controlling FPS
 clock = pygame.time.Clock()
 FPS = 60
 
-# Colors (R, G, B)
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
+fruit = Fruit(screen, (WIDTH // 2, HEIGHT // 4))
+player = Player(screen, (WIDTH // 2, HEIGHT // 2), fruit.position)
 
-# --- Game loop ---
+
 running = True
 while running:
+
+    screen.fill((26, 26, 26))
 
     # 1. Handle events
     for event in pygame.event.get():
@@ -29,17 +30,14 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 running = False
 
-    # 2. Update game state (logic goes here)
-
-    # 3. Draw everything
-    screen.fill(BLACK)          # Clear screen
-    # ... draw your stuff here ...
-
-    pygame.draw.circle(screen, (0, 0, 255), (WIDTH // 2, HEIGHT // 2), 25)
-    pygame.draw.circle(screen, (255, 0, 0), (WIDTH // 2, 60), 25)
+    
+    player.forward()
+    print(player.player_pos)
+    player.draw()
+    
+    fruit.draw()
 
     pygame.display.flip()       # Push frame to display
-
     clock.tick(FPS)             # Cap to 60 FPS
 
 pygame.quit()
