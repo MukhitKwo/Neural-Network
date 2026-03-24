@@ -1,6 +1,6 @@
 import pygame
 import sys
-from player import  Player
+from player import Player
 from fruit import Fruit
 
 pygame.init()
@@ -14,7 +14,10 @@ clock = pygame.time.Clock()
 FPS = 60
 
 fruit = Fruit(screen, (WIDTH // 2, HEIGHT // 4))
-player = Player(screen, (WIDTH // 2, HEIGHT // 2), fruit.position)
+
+players = []
+for i in range(5):
+    players.append(Player(screen, (WIDTH // 2, HEIGHT // 2), fruit.position))
 
 
 running = True
@@ -30,11 +33,10 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 running = False
 
-    
-    player.forward()
-    print(player.player_pos)
-    player.draw()
-    
+    for player in players:
+        player.forward()
+        player.draw()
+
     fruit.draw()
 
     pygame.display.flip()       # Push frame to display

@@ -4,7 +4,7 @@ import copy
 
 FRAMES = 20
 POPULATION_SIZE = 10
-MAX_SPEED = 5
+MAX_SPEED = 3
 
 class NeuralNetwork:
     def __init__(self, p_pos, f_pos):
