@@ -6,8 +6,9 @@ FRAMES = 20
 POPULATION_SIZE = 10
 MAX_SPEED = 3
 
+
 class NeuralNetwork:
-    def __init__(self, p_pos, f_pos):
+    def __init__(self, p_pos: tuple, f_pos: tuple):
         self.player_pos = p_pos
         self.fruit_pos = f_pos
         self.layer_1_weights = self.generate_random_weights(3, 3)  # 3 neurons, 3 inputs
@@ -24,8 +25,7 @@ class NeuralNetwork:
     def calculate_A(self, inputs, weights, biases):
         raw_Z = []
         for neuron_weights in weights:  # for each row of weights
-            z_row = sum(n * w for n, w in zip(inputs, neuron_weights))  # multiply the values by the weights and sum everything
-            raw_Z.append(z_row)
+            raw_Z.append(sum(n * w for n, w in zip(inputs, neuron_weights)))  # multiply the values by the weights and sum everything
 
         Z = [v + b for v, b in zip(raw_Z, biases)]  # add bias
 
@@ -58,6 +58,13 @@ class NeuralNetwork:
         )
 
         return self.player_pos
+
+    def get_fitness(self):
+        p1 = self.player_pos
+        p2 = self.fruit_pos
+        distance = (p2[0] - p1[0])**2 + (p2[1] - p1[1])**2
+        fitness = 1 / (distance / 100)
+        return fitness
 
     def mutate(self, rate=0.1):
         # add a small random noise to the weights and biases

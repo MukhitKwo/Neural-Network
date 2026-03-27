@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import pygame
 import sys
 from player import Player
@@ -20,6 +22,8 @@ for i in range(5):
     players.append(Player(screen, (WIDTH // 2, HEIGHT // 2), fruit.position))
 
 
+frame = 0
+
 running = True
 while running:
 
@@ -37,10 +41,25 @@ while running:
         player.forward()
         player.draw()
 
+    if frame >= 100:
+        frame = 0
+        best_player = None
+        for player in players:
+            
+            # if player.neural_network.fitness() < best_player
+            
+            player.reset_pos(players[0].position)
+            player.neural_network = players[0].neural_network
+            player.neural_network.mutate(0.1)
+       
+
     fruit.draw()
 
     pygame.display.flip()       # Push frame to display
+
     clock.tick(FPS)             # Cap to 60 FPS
+    frame += 1
+    print(frame)
 
 pygame.quit()
 sys.exit()
