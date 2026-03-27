@@ -4,17 +4,14 @@ import copy
 
 FRAMES = 20
 POPULATION_SIZE = 10
-MAX_SPEED = 3
+MAX_SPEED = 5
 
 
 class NeuralNetwork:
-    def __init__(self, p_pos: tuple, f_pos: tuple):
-        self.player_pos = p_pos
-        self.fruit_pos = f_pos
-        self.layer_1_weights = self.generate_random_weights(3, 3)  # 3 neurons, 3 inputs
-        self.layer_1_bias = self.generate_random_biases(3)
-        self.layer_2_weights = self.generate_random_weights(2, 3)  # 2 neurons, 3 inputs
-        self.layer_2_bias = self.generate_random_biases(2)
+    def __init__(self, player_pos: tuple, fruit_pos: tuple):
+        self.player_pos = player_pos
+        self.fruit_pos = fruit_pos
+        self.parameters = self.set_parameters([[3, 3], [2, 3]])
 
     def generate_random_weights(self, rows, cols):
         return np.random.uniform(-1, 1, (rows, cols))  # generate a matrix of random weights between -1 and 1
@@ -22,15 +19,25 @@ class NeuralNetwork:
     def generate_random_biases(self, size):
         return np.random.uniform(-1, 1, size)  # generate a list of random bias between -1 and 1
 
-    def calculate_A(self, inputs, weights, biases):
-        raw_Z = []
+    def set_parameters(self, layers):
+        params = []
+        for values in layers:
+            weights = self.generate_random_weights(values[0], values[1])  # x neurons, x inputs
+            bias = self.generate_random_biases(values[0]) # x neurons
+            params.append([weights, bias])
+
+        return params
+
+    def calculate_activation(self, inputs, weights, biases):
+        raw_sum = []
         for neuron_weights in weights:  # for each row of weights
-            raw_Z.append(sum(n * w for n, w in zip(inputs, neuron_weights)))  # multiply the values by the weights and sum everything
+            raw_sum.append(sum(n * w for n, w in zip(inputs, neuron_weights)))  # multiply the values by the weights and sum everything
 
-        Z = [v + b for v, b in zip(raw_Z, biases)]  # add bias
+        sum = [v + b for v, b in zip(raw_sum, biases)]  # add bias
 
-        A = [math.tanh(v) for v in Z]  # normalize
-        return A
+        activation = [math.tanh(v) for v in sum]  # normalize
+        
+        return activation
 
     def forward(self):
 
@@ -41,14 +48,14 @@ class NeuralNetwork:
         raw_values = [dx / dist, dy/dist, 1 / (1 + dist)]
 
         # LAYER 1
-        A_layer_1 = self.calculate_A(raw_values, self.layer_1_weights, self.layer_1_bias)
+        activation_layer_1 = self.calculate_activation(raw_values, self.parameters[0][0], self.parameters[0][1])
 
         # LAYER 2
-        A_layer_2 = self.calculate_A(A_layer_1, self.layer_2_weights, self.layer_2_bias)
+        activation_layer_2 = self.calculate_activation(activation_layer_1, self.parameters[1][0], self.parameters[1][1])
 
         # OUTPUT
-        angle = (A_layer_2[0] + 1) / 2 * 360  # convert normilizaed value to angle
-        speed = (A_layer_2[1] + 1) / 2 * MAX_SPEED  # convert normalized value to speed
+        angle = (activation_layer_2[0] + 1) / 2 * 360  # convert normilizaed value to angle
+        speed = (activation_layer_2[1] + 1) / 2 * MAX_SPEED  # convert normalized value to speed
 
         # get the postion of the player based on angle and speed
         angle_rad = math.radians(angle)
@@ -59,10 +66,10 @@ class NeuralNetwork:
 
         return self.player_pos
 
-    def get_fitness(self):
+    def fitness(self):
         p1 = self.player_pos
         p2 = self.fruit_pos
-        distance = (p2[0] - p1[0])**2 + (p2[1] - p1[1])**2
+        distance = math.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
         fitness = 1 / (distance / 100)
         return fitness
 
