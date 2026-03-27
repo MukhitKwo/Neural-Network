@@ -20,7 +20,7 @@ fruit = Fruit(screen, (700, 500))
 
 players = []
 for i in range(5):
-    players.append(Player(screen, (100, 50), fruit.position))
+    players.append(Player(screen, (200, 200), fruit.position))
 
 frame = 0
 
@@ -41,7 +41,7 @@ while running:
         player.forward()
         player.draw()
 
-    if frame >= 250:
+    if frame >= 100:
         frame = 0
         best_player = None
 
@@ -51,15 +51,12 @@ while running:
             if player.fitness() > (best_player.fitness() if best_player else 0):
                 best_player = player
 
-        best_player.player_pos = (100, 100)
+        best_player.player_pos = (200, 200)
 
         for player in players:
 
             player.player_pos = best_player.player_pos[:]
-            player.layer_1_weights = best_player.layer_1_weights.copy()
-            player.layer_1_bias = best_player.layer_1_bias.copy()
-            player.layer_2_weights = best_player.layer_2_weights.copy()
-            player.layer_2_bias = best_player.layer_2_bias.copy()
+            player.parameters = deepcopy(best_player.parameters)
 
         for player in players[1:]:
             player.mutate(0.1)
@@ -70,7 +67,7 @@ while running:
 
     clock.tick(FPS)             # Cap to 60 FPS
     frame += 1
-    # print(frame)
+    print(frame)
 
 pygame.quit()
 sys.exit()

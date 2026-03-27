@@ -23,7 +23,7 @@ class NeuralNetwork:
         params = []
         for values in layers:
             weights = self.generate_random_weights(values[0], values[1])  # x neurons, x inputs
-            bias = self.generate_random_biases(values[0]) # x neurons
+            bias = self.generate_random_biases(values[0])  # x neurons
             params.append([weights, bias])
 
         return params
@@ -33,10 +33,10 @@ class NeuralNetwork:
         for neuron_weights in weights:  # for each row of weights
             raw_sum.append(sum(n * w for n, w in zip(inputs, neuron_weights)))  # multiply the values by the weights and sum everything
 
-        sum = [v + b for v, b in zip(raw_sum, biases)]  # add bias
+        final_sum = [v + b for v, b in zip(raw_sum, biases)]  # add bias
 
-        activation = [math.tanh(v) for v in sum]  # normalize
-        
+        activation = [math.tanh(v) for v in final_sum]  # normalize
+
         return activation
 
     def forward(self):
@@ -75,7 +75,7 @@ class NeuralNetwork:
 
     def mutate(self, rate=0.1):
         # add a small random noise to the weights and biases
-        self.layer_1_weights += np.random.uniform(-rate, rate, self.layer_1_weights.shape)
-        self.layer_1_bias += np.random.uniform(-rate, rate, self.layer_1_bias.shape)
-        self.layer_2_weights += np.random.uniform(-rate, rate, self.layer_2_weights.shape)
-        self.layer_2_bias += np.random.uniform(-rate, rate, self.layer_2_bias.shape)
+        self.parameters[0][0] += np.random.uniform(-rate, rate, self.parameters[0][0].shape)
+        self.parameters[0][1] += np.random.uniform(-rate, rate, self.parameters[0][1].shape)
+        self.parameters[1][0] += np.random.uniform(-rate, rate, self.parameters[1][0].shape)
+        self.parameters[1][1] += np.random.uniform(-rate, rate, self.parameters[1][1].shape)
