@@ -8,10 +8,8 @@ class NeuralNetwork:
     def __init__(self, position: tuple, goals: list, config: NeuralNetworkConfig):
         self.position = position
         self.goals = goals
-        self.hidden_layer_dimensions = self.set_parameters(config.hidden_layer_dimensions)
+        self.hidden_layer_parameters = self.set_parameters(config.hidden_layer_dimensions)
         self.mutation_rate = config.mutation_rate
-        self.max_degrees = config.max_degrees
-        self.max_speed = config.max_speed
 
     def generate_random_weights(self, rows, cols):
         return np.random.uniform(-1, 1, (rows, cols))  # generate a matrix of random weights between -1 and 1
@@ -39,50 +37,21 @@ class NeuralNetwork:
 
         return activation
 
-    def forward(self):
-
-        input_values = []
-        for goal in self.goals:
-            goal_pos = goal.position
-            dx = (goal_pos[0] - self.position[0]) / 800  # get x distance and normalize it to -1 and 1
-            dy = (goal_pos[1] - self.position[1]) / 600  # same for y
-            dist = math.sqrt(dx**2 + dy**2)  # get the distance also normalized
-
-            values = [dx / dist, dy/dist, 1 / (1 + dist)]
-            input_values.extend(values)
+    def forward(self, input_layer):
 
         # todo turn layers dynamic
         # LAYER 1
-        activation_layer_1 = self.calculate_activation(input_values, self.hidden_layer_dimensions[0][0], self.hidden_layer_dimensions[0][1])
+        activation_layer_1 = self.calculate_activation(input_layer, self.hidden_layer_parameters[0][0], self.hidden_layer_parameters[0][1])
 
         # LAYER 2
-        activation_layer_2 = self.calculate_activation(activation_layer_1, self.hidden_layer_dimensions[1][0], self.hidden_layer_dimensions[1][1])
+        activation_layer_2 = self.calculate_activation(activation_layer_1, self.hidden_layer_parameters[1][0], self.hidden_layer_parameters[1][1])
 
-        # OUTPUT
-        angle = (activation_layer_2[0] + 1) / 2 * self.max_degrees  # convert normilizaed value to angle
-        speed = (activation_layer_2[1] + 1) / 2 * self.max_speed  # convert normalized value to speed
-
-        # get the postion of the player based on angle and speed
-        angle_rad = math.radians(angle)
-        self.position = (
-            self.position[0] + math.cos(angle_rad) * speed,
-            self.position[1] + math.sin(angle_rad) * speed
-        )
-
-        return self.position
-
-    def fitness(self):
-        p1 = self.position
-        p2 = self.goals[0].position
-        distance = math.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
-        fitness = 1 / (distance + 1)
-        return fitness
+        return activation_layer_2
 
     def mutate(self):
         # todo use Gaussian distribution instant of uniform
         # add a small random noise to the weights and biases
         rate = self.mutation_rate
-        for layer in self.hidden_layer_dimensions:
+        for layer in self.hidden_layer_parameters:
             layer[0] += np.random.uniform(-rate, rate, layer[0].shape)
             layer[1] += np.random.uniform(-rate, rate, layer[1].shape)
-        

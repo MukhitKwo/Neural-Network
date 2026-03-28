@@ -51,8 +51,8 @@ while running:
         player_population.reproduce()
         print("Current generation:", generation)
 
-    player_population.forward()
     fruit.draw()
+    player_population.forward()
 
     pygame.display.flip()
 

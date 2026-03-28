@@ -9,7 +9,10 @@ class PlayerPopulation:
 
     def forward(self):
         for player in self.population:
-            player.forward()
+            input_layer = player.input_layer()
+            last_hidden_layer = player.forward(input_layer)
+            output_layer = player.output_layer(last_hidden_layer)
+            player.set_player_position(output_layer)
             player.draw()
 
     def reproduce(self):
@@ -21,7 +24,7 @@ class PlayerPopulation:
 
         for i, player in enumerate(self.population):
             player.position = self.start_position
-            player.hidden_layer_dimensions = copy.deepcopy(best_player.hidden_layer_dimensions)
+            player.hidden_layer_parameters = copy.deepcopy(best_player.hidden_layer_parameters)
 
             if i != 0:
                 player.mutate()
