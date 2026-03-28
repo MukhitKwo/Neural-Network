@@ -9,10 +9,7 @@ class PlayerPopulation:
 
     def forward(self):
         for player in self.population:
-            input_layer = player.input_layer()
-            last_hidden_layer = player.forward(input_layer)
-            output_layer = player.output_layer(last_hidden_layer)
-            player.set_player_position(output_layer)
+            player.update()
             player.draw()
 
     def reproduce(self):

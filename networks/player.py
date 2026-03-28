@@ -22,6 +22,12 @@ class Player(NeuralNetwork):
     def draw(self):
         pygame.draw.circle(self.screen, self.color, self.position, self.radius)
 
+    def update(self):
+        input_layer = self.input_layer()
+        last_hidden_layer = self.forward(input_layer)
+        output_layer = self.output_layer(last_hidden_layer)
+        self.set_player_position(output_layer)
+
     def input_layer(self):
         input_values = []
         for goal in self.goals:
@@ -36,7 +42,6 @@ class Player(NeuralNetwork):
         return input_values
 
     def output_layer(self, last_hidden_layer):
-        # OUTPUT
         angle = (last_hidden_layer[0] + 1) / 2 * self.max_degrees  # convert normilizaed value to angle
         speed = (last_hidden_layer[1] + 1) / 2 * self.max_speed  # convert normalized value to speed
 
@@ -54,7 +59,7 @@ class Player(NeuralNetwork):
 
     def fitness(self):
         p1 = self.position
-        p2 = self.goals[0].position
+        p2 = self.goals[0].position  # todo update to be dynamic
         distance = math.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
         fitness = 1 / (distance + 1)
         return fitness
