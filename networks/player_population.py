@@ -3,9 +3,9 @@ import copy
 
 
 class PlayerPopulation:
-    def __init__(self, screen, initial_player_pos, fruit, config):
-        self.initial_player_pos = initial_player_pos
-        self.population = [Player(screen, self.initial_player_pos, fruit.position, config) for _ in range(config.population_size)]
+    def __init__(self, screen, start_position, goals, config):
+        self.start_position = start_position
+        self.population = [Player(screen, self.start_position, goals, config) for _ in range(config.population_size)]
 
     def forward(self):
         for player in self.population:
@@ -20,8 +20,8 @@ class PlayerPopulation:
                 best_player = player
 
         for i, player in enumerate(self.population):
-            player.player_pos = self.initial_player_pos
-            player.parameters = copy.deepcopy(best_player.parameters)
+            player.position = self.start_position
+            player.hidden_layer_dimensions = copy.deepcopy(best_player.hidden_layer_dimensions)
 
             if i != 0:
                 player.mutate()

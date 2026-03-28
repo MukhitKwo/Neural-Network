@@ -3,14 +3,11 @@ from neural_network import NeuralNetwork
 import random
 
 class Player(NeuralNetwork):
-    def __init__(self, screen, player_pos, fruit_pos, config):
-        super().__init__(player_pos, fruit_pos, config)
+    def __init__(self, screen, position, goals, config):
+        super().__init__(position, goals, config)
         self.screen = screen
         self.color = (0, 0, random.randint(200, 255))
         self.radius = 25
 
-    def reset_pos(self, new_pos):
-        self.player_pos = new_pos
-
     def draw(self):
-        pygame.draw.circle(self.screen, self.color, self.player_pos, self.radius)
+        pygame.draw.circle(self.screen, self.color, self.position, self.radius)

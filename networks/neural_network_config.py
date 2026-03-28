@@ -1,10 +1,7 @@
-import numpy as np
-
-
 class NeuralNetworkConfig:
 
-    def __init__(self, parameters_shape, mutation_rate, population_size, max_speed, max_degrees):
-        self.parameters_shape = parameters_shape
+    def __init__(self, hidden_layer_dimensions: list, mutation_rate: float, population_size: int, max_speed: float, max_degrees: int):
+        self.hidden_layer_dimensions = hidden_layer_dimensions
         self.mutation_rate = mutation_rate
         self.population_size = population_size
         self.max_speed = max_speed

@@ -5,10 +5,10 @@ from neural_network_config import NeuralNetworkConfig
 
 
 class NeuralNetwork:
-    def __init__(self, player_pos: tuple, fruit_pos: tuple, config: NeuralNetworkConfig):
-        self.player_pos = player_pos
-        self.fruit_pos = fruit_pos
-        self.parameters = self.set_parameters(config.parameters_shape)
+    def __init__(self, position: tuple, goals: list, config: NeuralNetworkConfig):
+        self.position = position
+        self.goals = goals
+        self.hidden_layer_dimensions = self.set_parameters(config.hidden_layer_dimensions)
         self.mutation_rate = config.mutation_rate
         self.max_degrees = config.max_degrees
         self.max_speed = config.max_speed
@@ -19,11 +19,11 @@ class NeuralNetwork:
     def generate_random_biases(self, size):
         return np.random.uniform(-1, 1, size)  # generate a list of random bias between -1 and 1
 
-    def set_parameters(self, layers):
+    def set_parameters(self, layer_dimensions):
         params = []
-        for values in layers:
-            weights = self.generate_random_weights(values[0], values[1])  # x neurons, x inputs
-            bias = self.generate_random_biases(values[0])  # x neurons
+        for layer, dimension in enumerate(layer_dimensions):
+            weights = self.generate_random_weights(dimension, layer_dimensions[layer - 1] if layer > 0 else (len(self.goals) * 3))  # x neurons, x inputs
+            bias = self.generate_random_biases(dimension)  # x neurons
             params.append([weights, bias])
 
         return params
@@ -41,18 +41,22 @@ class NeuralNetwork:
 
     def forward(self):
 
-        dx = (self.fruit_pos[0] - self.player_pos[0]) / 800  # get x distance and normalize it to -1 and 1
-        dy = (self.fruit_pos[1] - self.player_pos[1]) / 600  # same for y
-        dist = math.sqrt(dx**2 + dy**2)  # get the distance also normalized
+        input_values = []
+        for goal in self.goals:
+            goal_pos = goal.position
+            dx = (goal_pos[0] - self.position[0]) / 800  # get x distance and normalize it to -1 and 1
+            dy = (goal_pos[1] - self.position[1]) / 600  # same for y
+            dist = math.sqrt(dx**2 + dy**2)  # get the distance also normalized
 
-        raw_values = [dx / dist, dy/dist, 1 / (1 + dist)]
+            values = [dx / dist, dy/dist, 1 / (1 + dist)]
+            input_values.extend(values)
 
         # todo turn layers dynamic
         # LAYER 1
-        activation_layer_1 = self.calculate_activation(raw_values, self.parameters[0][0], self.parameters[0][1])
+        activation_layer_1 = self.calculate_activation(input_values, self.hidden_layer_dimensions[0][0], self.hidden_layer_dimensions[0][1])
 
         # LAYER 2
-        activation_layer_2 = self.calculate_activation(activation_layer_1, self.parameters[1][0], self.parameters[1][1])
+        activation_layer_2 = self.calculate_activation(activation_layer_1, self.hidden_layer_dimensions[1][0], self.hidden_layer_dimensions[1][1])
 
         # OUTPUT
         angle = (activation_layer_2[0] + 1) / 2 * self.max_degrees  # convert normilizaed value to angle
@@ -60,26 +64,25 @@ class NeuralNetwork:
 
         # get the postion of the player based on angle and speed
         angle_rad = math.radians(angle)
-        self.player_pos = (
-            self.player_pos[0] + math.cos(angle_rad) * speed,
-            self.player_pos[1] + math.sin(angle_rad) * speed
+        self.position = (
+            self.position[0] + math.cos(angle_rad) * speed,
+            self.position[1] + math.sin(angle_rad) * speed
         )
 
-        return self.player_pos
+        return self.position
 
     def fitness(self):
-        p1 = self.player_pos
-        p2 = self.fruit_pos
+        p1 = self.position
+        p2 = self.goals[0].position
         distance = math.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
         fitness = 1 / (distance + 1)
         return fitness
 
     def mutate(self):
-        # todo turn mutation dynamic
         # todo use Gaussian distribution instant of uniform
         # add a small random noise to the weights and biases
         rate = self.mutation_rate
-        self.parameters[0][0] += np.random.uniform(-rate, rate, self.parameters[0][0].shape)
-        self.parameters[0][1] += np.random.uniform(-rate, rate, self.parameters[0][1].shape)
-        self.parameters[1][0] += np.random.uniform(-rate, rate, self.parameters[1][0].shape)
-        self.parameters[1][1] += np.random.uniform(-rate, rate, self.parameters[1][1].shape)
+        for layer in self.hidden_layer_dimensions:
+            layer[0] += np.random.uniform(-rate, rate, layer[0].shape)
+            layer[1] += np.random.uniform(-rate, rate, layer[1].shape)
+        

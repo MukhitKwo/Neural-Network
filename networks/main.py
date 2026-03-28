@@ -20,13 +20,13 @@ FPS = 60
 fruit = Fruit(screen, (700, 500))
 
 config = NeuralNetworkConfig(
-    parameters_shape=[[3, 3], [2, 3]],
+    hidden_layer_dimensions=[3, 2],  # 1st hidden layer with 3 neurons and 2nd hidden layer with 2 neurons
     mutation_rate=0.1,
     population_size=10,
     max_speed=5,
     max_degrees=360
 )
-player_population = PlayerPopulation(screen, (200, 200), fruit, config)
+player_population = PlayerPopulation(screen, (200, 200), [fruit], config)
 
 ticks_per_generation = 240
 frame = 0
