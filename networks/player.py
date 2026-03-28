@@ -28,7 +28,7 @@ class Player(NeuralNetwork):
             goal_pos = goal.position
             dx = (goal_pos[0] - self.position[0]) / 800  # get x distance and normalize it to -1 and 1
             dy = (goal_pos[1] - self.position[1]) / 600  # same for y
-            dist = math.sqrt(dx**2 + dy**2)  # get the distance also normalized
+            dist = math.sqrt(dx**2 + dy**2)  # get the distance already normalized
 
             values = [dx / dist, dy/dist, 1 / (1 + dist)]
             input_values.extend(values)

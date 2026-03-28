@@ -27,11 +27,14 @@ class NeuralNetwork:
         return params
 
     def calculate_activation(self, inputs, weights, biases):
-        raw_sum = []
-        for neuron_weights in weights:  # for each row of weights
-            raw_sum.append(sum(n * w for n, w in zip(inputs, neuron_weights)))  # multiply the values by the weights and sum everything
+        # raw_sum = []
+        # for neuron_weights in weights:  # for each row of weights
+        #     raw_sum.append(sum(n * w for n, w in zip(inputs, neuron_weights)))  # multiply the values by the weights and sum everything
 
-        final_sum = [v + b for v, b in zip(raw_sum, biases)]  # add bias
+        # final_sum = [v + b for v, b in zip(raw_sum, biases)]  # add bias
+
+        raw_sum = np.dot(weights, inputs)
+        final_sum = raw_sum + biases
 
         activation = [math.tanh(v) for v in final_sum]  # normalize
 
@@ -39,19 +42,17 @@ class NeuralNetwork:
 
     def forward(self, input_layer):
 
-        # todo turn layers dynamic
-        # LAYER 1
-        activation_layer_1 = self.calculate_activation(input_layer, self.hidden_layer_parameters[0][0], self.hidden_layer_parameters[0][1])
+        previous_activation_layer = self.calculate_activation(input_layer, self.hidden_layer_parameters[0][0], self.hidden_layer_parameters[0][1])
+        for l in range(1, len(self.hidden_layer_parameters)):
+            previous_activation_layer = self.calculate_activation(
+                previous_activation_layer, self.hidden_layer_parameters[l][0], self.hidden_layer_parameters[l][1])
 
-        # LAYER 2
-        activation_layer_2 = self.calculate_activation(activation_layer_1, self.hidden_layer_parameters[1][0], self.hidden_layer_parameters[1][1])
-
-        return activation_layer_2
+        return previous_activation_layer
 
     def mutate(self):
-        # todo use Gaussian distribution instant of uniform
         # add a small random noise to the weights and biases
+        # todo use Gaussian distribution instant of uniform
         rate = self.mutation_rate
         for layer in self.hidden_layer_parameters:
-            layer[0] += np.random.uniform(-rate, rate, layer[0].shape)
-            layer[1] += np.random.uniform(-rate, rate, layer[1].shape)
+            layer[0] += np.random.uniform(-rate, rate, layer[0].shape)  # mutate weights
+            layer[1] += np.random.uniform(-rate, rate, layer[1].shape)  # mutate biases
