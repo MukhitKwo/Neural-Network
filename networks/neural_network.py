@@ -1,17 +1,17 @@
 import math
 import numpy as np
 import copy
-
-FRAMES = 20
-POPULATION_SIZE = 10
-MAX_SPEED = 5
+from neural_network_config import NeuralNetworkConfig
 
 
 class NeuralNetwork:
-    def __init__(self, player_pos: tuple, fruit_pos: tuple):
+    def __init__(self, player_pos: tuple, fruit_pos: tuple, config: NeuralNetworkConfig):
         self.player_pos = player_pos
         self.fruit_pos = fruit_pos
-        self.parameters = self.set_parameters([[3, 3], [2, 3]])
+        self.parameters = self.set_parameters(config.parameters_shape)
+        self.mutation_rate = config.mutation_rate
+        self.max_degrees = config.max_degrees
+        self.max_speed = config.max_speed
 
     def generate_random_weights(self, rows, cols):
         return np.random.uniform(-1, 1, (rows, cols))  # generate a matrix of random weights between -1 and 1
@@ -47,6 +47,7 @@ class NeuralNetwork:
 
         raw_values = [dx / dist, dy/dist, 1 / (1 + dist)]
 
+        # todo turn layers dynamic
         # LAYER 1
         activation_layer_1 = self.calculate_activation(raw_values, self.parameters[0][0], self.parameters[0][1])
 
@@ -54,8 +55,8 @@ class NeuralNetwork:
         activation_layer_2 = self.calculate_activation(activation_layer_1, self.parameters[1][0], self.parameters[1][1])
 
         # OUTPUT
-        angle = (activation_layer_2[0] + 1) / 2 * 360  # convert normilizaed value to angle
-        speed = (activation_layer_2[1] + 1) / 2 * MAX_SPEED  # convert normalized value to speed
+        angle = (activation_layer_2[0] + 1) / 2 * self.max_degrees  # convert normilizaed value to angle
+        speed = (activation_layer_2[1] + 1) / 2 * self.max_speed  # convert normalized value to speed
 
         # get the postion of the player based on angle and speed
         angle_rad = math.radians(angle)
@@ -73,8 +74,10 @@ class NeuralNetwork:
         fitness = 1 / (distance / 100)
         return fitness
 
-    def mutate(self, rate=0.1):
+    def mutate(self):
         # add a small random noise to the weights and biases
+        # todo turn mutation dynamic
+        rate = self.mutation_rate
         self.parameters[0][0] += np.random.uniform(-rate, rate, self.parameters[0][0].shape)
         self.parameters[0][1] += np.random.uniform(-rate, rate, self.parameters[0][1].shape)
         self.parameters[1][0] += np.random.uniform(-rate, rate, self.parameters[1][0].shape)
