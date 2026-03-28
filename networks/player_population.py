@@ -20,7 +20,7 @@ class PlayerPopulation:
                 best_player = player
 
         for i, player in enumerate(self.population):
-            player.player_pos = self.initial_player_pos[:]
+            player.player_pos = self.initial_player_pos
             player.parameters = copy.deepcopy(best_player.parameters)
 
             if i != 0:

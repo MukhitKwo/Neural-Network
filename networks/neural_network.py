@@ -71,12 +71,13 @@ class NeuralNetwork:
         p1 = self.player_pos
         p2 = self.fruit_pos
         distance = math.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
-        fitness = 1 / (distance / 100)
+        fitness = 1 / (distance + 1)
         return fitness
 
     def mutate(self):
-        # add a small random noise to the weights and biases
         # todo turn mutation dynamic
+        # todo use Gaussian distribution instant of uniform
+        # add a small random noise to the weights and biases
         rate = self.mutation_rate
         self.parameters[0][0] += np.random.uniform(-rate, rate, self.parameters[0][0].shape)
         self.parameters[0][1] += np.random.uniform(-rate, rate, self.parameters[0][1].shape)
