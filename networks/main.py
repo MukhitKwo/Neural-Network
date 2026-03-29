@@ -15,18 +15,18 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Neural Network")
 
 clock = pygame.time.Clock()
-FPS = 60
+FPS = 240
 
 fruit = Fruit(screen, (900, 200))
 
 config = NeuralNetworkConfig(
-    hidden_layer_dimensions=[3, 4, 2],  # 1st hidden layer has 3 inputs, 2nd has 4 inputs and 3rd has 2
-    mutation_rate=0.05,
+    hidden_layer_dimensions=[3, 6, 4, 2],  # 1st hidden layer has 3 inputs, 2nd has 4 inputs and 3rd has 2
+    mutation_rate=0.02,
     population_size=10,
     max_speed=5,
     max_degrees=360
 )
-player_population = PlayerPopulation(screen, (200, 600), [fruit], config)
+player_population = PlayerPopulation(screen, (600, 450), [fruit], config)
 
 frames_per_generation = 240
 frame = 0
@@ -52,7 +52,7 @@ while running:
         print("Current generation:", generation)
 
     fruit.draw()
-    player_population.forward()
+    player_population.forward(frame)
 
     pygame.display.flip()
 

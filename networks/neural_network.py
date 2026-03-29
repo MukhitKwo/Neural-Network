@@ -5,8 +5,7 @@ from neural_network_config import NeuralNetworkConfig
 
 
 class NeuralNetwork:
-    def __init__(self, position: tuple, goals: list, config: NeuralNetworkConfig):
-        self.position = position
+    def __init__(self, goals: list, config: NeuralNetworkConfig):
         self.goals = goals
         self.hidden_layer_parameters = self.set_initial_parameters(config.hidden_layer_dimensions)
         self.mutation_rate = config.mutation_rate
@@ -55,5 +54,5 @@ class NeuralNetwork:
         # todo use Gaussian distribution instant of uniform
         rate = self.mutation_rate
         for layer in self.hidden_layer_parameters:
-            layer[0] += np.random.uniform(-rate, rate, layer[0].shape)  # mutate weights
-            layer[1] += np.random.uniform(-rate, rate, layer[1].shape)  # mutate biases
+            layer[0] += np.random.normal(0, scale=rate, size=layer[0].shape)  # mutate weights
+            layer[1] += np.random.normal(0, scale=rate, size=layer[1].shape)  # mutate biases
