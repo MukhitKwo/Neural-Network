@@ -1,6 +1,6 @@
 import random
 
-from networks.agent import Agent
+from agent import Agent
 import copy
 
 

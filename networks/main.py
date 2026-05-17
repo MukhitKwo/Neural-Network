@@ -1,10 +1,7 @@
-from copy import deepcopy
-
 import pygame
 import sys
-from networks.agent import Agent
 from fruit import Fruit
-from player_population import AgentPopulation
+from agent_population import AgentPopulation
 from neural_network_config import NeuralNetworkConfig
 
 pygame.init()
@@ -28,7 +25,7 @@ config = NeuralNetworkConfig(
     max_speed=5,
     max_degrees=360
 )
-player_population = AgentPopulation(screen, (600, 450), [fruit1, fruit2], config)
+agent_population = AgentPopulation(screen, (600, 450), [fruit1, fruit2], config)
 
 max_seconds_per_generation = 5
 frame = 0
@@ -50,13 +47,13 @@ while running:
     if frame >= (max_seconds_per_generation * FPS):
         frame = 0
         generation += 1
-        player_population.reproduce()
+        agent_population.reproduce()
         print("Current generation:", generation)
 
     fruit1.draw()
     fruit2.draw()
     
-    player_population.forward(frame)
+    agent_population.forward(frame)
     
 
     pygame.display.flip()
