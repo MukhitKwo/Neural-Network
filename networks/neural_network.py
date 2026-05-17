@@ -5,8 +5,8 @@ from neural_network_config import NeuralNetworkConfig
 
 
 class NeuralNetwork:
-    def __init__(self, goals: list, config: NeuralNetworkConfig):
-        self.goals = goals
+    def __init__(self, config: NeuralNetworkConfig):
+        self.number_inputs = config.number_inputs
         self.hidden_layer_parameters = self.set_initial_parameters(config.hidden_layer_dimensions)
         self.mutation_rate = config.mutation_rate
 
@@ -20,7 +20,7 @@ class NeuralNetwork:
 
         params = []
         for layer, dimension in enumerate(layer_dimensions):
-            weights = generate_random_weights(dimension, layer_dimensions[layer - 1] if layer > 0 else (len(self.goals) * 3))  # x neurons, x inputs
+            weights = generate_random_weights(dimension, layer_dimensions[layer - 1] if layer > 0 else self.number_inputs)  # x neurons, x inputs
             bias = generate_random_biases(dimension)  # x neurons
             params.append([weights, bias])
 
@@ -36,11 +36,6 @@ class NeuralNetwork:
         return previous_activation_layer
 
     def calculate_activation(self, inputs, weights, biases):
-        # raw_sum = []
-        # for neuron_weights in weights:  # for each row of weights
-        #     raw_sum.append(sum(n * w for n, w in zip(inputs, neuron_weights)))  # multiply the values by the weights and sum everything
-
-        # final_sum = [v + b for v, b in zip(raw_sum, biases)]  # add bias
 
         raw_sum = np.dot(weights, inputs)  # * need to understand exactly how dot product works
         final_sum = raw_sum + biases
@@ -51,7 +46,7 @@ class NeuralNetwork:
 
     def mutate(self):
         # add a small random noise to the weights and biases
-        # todo use Gaussian distribution instant of uniform
+        # todo make so only a few neurons update
         rate = self.mutation_rate
         for layer in self.hidden_layer_parameters:
             layer[0] += np.random.normal(0, scale=rate, size=layer[0].shape)  # mutate weights

@@ -19,19 +19,18 @@ class PlayerPopulation:
         best_player = None
 
         for player in self.population:
-            player.distance_from_fruit()
+            player.fitness_proximity_to_fruit()
             if player.fitness > (best_player.fitness if best_player else 0):
                 best_player = player
                 
         print("Best fitness:",best_player.fitness)
 
         for i, player in enumerate(self.population):
-            player.position = self.start_position
-            player.hidden_layer_parameters = copy.deepcopy(best_player.hidden_layer_parameters)
-            player.collided = False
-            player.fitness = 0
+            player.inherit_best_player(self.start_position, best_player.hidden_layer_parameters, self.goals)
 
             if i != 0:
                 player.mutate()
 
         self.goals[0].position = (random.randint(100, 1100), random.randint(100, 800))
+        self.goals[1].position = (random.randint(100, 1100), random.randint(100, 800))
+        self.goals[2].position = (random.randint(100, 1100), random.randint(100, 800))
