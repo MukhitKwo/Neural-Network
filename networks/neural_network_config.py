@@ -1,6 +1,9 @@
+
+
+
 class NeuralNetworkConfig:
 
-    def __init__(self, number_inputs, hidden_layer_dimensions: list, mutation_rate: float, population_size: int, max_speed: float, max_degrees: int):
+    def __init__(self, number_inputs: int, hidden_layer_dimensions: list, mutation_rate: float, population_size: int, max_speed: float, max_degrees: int):
         self.number_inputs = number_inputs
         self.hidden_layer_dimensions = hidden_layer_dimensions
         self.mutation_rate = mutation_rate

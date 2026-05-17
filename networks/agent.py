@@ -17,9 +17,9 @@ class Agent(NeuralNetwork):
         self.position = position
         self.remaining_goals = goals.copy()
         self.closest_goal = self.get_closest_goal()
-        self.max_degrees = config.max_degrees
         self.max_speed = config.max_speed
-        self.color = (0, 0, random.randint(100, 255))
+        self.max_degrees = config.max_degrees
+        self.color = (0, 0, random.randint(155, 255))
         self.radius = 25
         self.fitness = 0
 
@@ -36,10 +36,10 @@ class Agent(NeuralNetwork):
     def get_closest_goal(self):
         closest_distance = None
         closest_goal = None
-        
+
         if len(self.remaining_goals) == 0:
             print("No goals left")
-            return None # todo: crashes is touches all fruits
+            return None  # todo: crashes is touches all fruits
 
         for goal in self.remaining_goals:
             goal_pos = goal.position
@@ -97,7 +97,7 @@ class Agent(NeuralNetwork):
         distance = math.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
         self.fitness += 1 / (distance + 1)
 
-    def inherit_best_player(self, start_position, best_player_hidden_layer_parameters, goals):
+    def inherit_best_agent(self, start_position, best_player_hidden_layer_parameters, goals):
         self.position = start_position
         self.hidden_layer_parameters = best_player_hidden_layer_parameters
         self.remaining_goals = goals.copy()

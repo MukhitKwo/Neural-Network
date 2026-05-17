@@ -26,11 +26,7 @@ class AgentPopulation:
         print("Best fitness:",best_player.fitness)
 
         for i, player in enumerate(self.population):
-            player.inherit_best_player(self.start_position, copy.deepcopy(best_player.hidden_layer_parameters), self.goals)
+            player.inherit_best_agent(self.start_position, copy.deepcopy(best_player.hidden_layer_parameters), self.goals)
 
             if i != 0:
                 player.mutate()
-
-        for goal in self.goals:
-            goal.position = (random.randint(100, 1100), random.randint(100, 800))
-            

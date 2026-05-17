@@ -1,3 +1,5 @@
+import random
+
 import pygame
 
 
@@ -10,5 +12,3 @@ class Fruit:
 
     def draw(self):
         pygame.draw.circle(self.screen, self.color, (self.position[0], self.position[1]), self.radius)
-
-

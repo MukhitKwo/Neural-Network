@@ -46,7 +46,7 @@ class NeuralNetwork:
 
     def mutate(self):
         # add a small random noise to the weights and biases
-        # todo make so only a few neurons update
+        # todo: make so only a percentage of the neurons mutate
         rate = self.mutation_rate
         for layer in self.hidden_layer_parameters:
             layer[0] += np.random.normal(0, scale=rate, size=layer[0].shape)  # mutate weights
