@@ -15,6 +15,7 @@ class Agent(NeuralNetwork):
         self.screen = screen
         super().__init__(config)
         self.position = position
+        self.outside_of_window = False
         self.remaining_goals = goals.copy()
         self.closest_goal = self.get_closest_goal()
         self.max_speed = config.max_speed
@@ -30,6 +31,7 @@ class Agent(NeuralNetwork):
         input_layer = self.input_layer()
         last_hidden_layer = self.forward(input_layer)
         output_layer = self.output_layer(last_hidden_layer)
+        self.is_outside_of_window()
         self.set_player_position(output_layer)
         self.did_collide_with_goal(frame)
 
@@ -38,8 +40,7 @@ class Agent(NeuralNetwork):
         closest_goal = None
 
         if len(self.remaining_goals) == 0:
-            print("No goals left")
-            return None  # todo: crashes is touches all fruits
+            return None
 
         for goal in self.remaining_goals:
             goal_pos = goal.position
@@ -79,6 +80,10 @@ class Agent(NeuralNetwork):
 
         self.position = new_position
 
+    def is_outside_of_window(self):
+        if self.position[0] < 0 or self.position[0] > 1200 or self.position[1] < 0 or self.position[1] > 900:
+            self.outside_of_window = True
+
     def did_collide_with_goal(self, frame):
         for goal in self.remaining_goals:
             p1 = self.position
@@ -89,9 +94,13 @@ class Agent(NeuralNetwork):
                 self.fitness += (1/(frame+1) + 1)
                 self.remaining_goals.remove(goal)
                 self.closest_goal = self.get_closest_goal()
-                break
-
+                
+                if self.closest_goal is None:
+                    self.fitness += 1000
+                                     
     def fitness_proximity_to_goal(self):
+        if self.closest_goal is None:
+            return
         p1 = self.position
         p2 = self.closest_goal.position  # todo: only checks to closest goal, not all
         distance = math.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)

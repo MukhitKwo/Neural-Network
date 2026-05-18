@@ -16,22 +16,24 @@ clock = pygame.time.Clock()
 FPS = 60
 
 # todo: convert to population class
-fruits = [Fruit(screen, (random.randint(100, 1100), random.randint(100, 800))) for _ in range(3)]
+fruits = [Fruit(screen, (random.randint(700, 1100), random.randint(100, 800))) for _ in range(1)]
 
 config = NeuralNetworkConfig(
     number_inputs=3,
-    hidden_layer_dimensions=[3, 6, 4, 2],
+    hidden_layer_dimensions=[8, 6, 4],
     max_speed=5,
     max_degrees=360,
-    mutation_rate=0.03,
-    population_size=10
+    mutation_rate=0.02,
+    population_size=100
 )
 agent_population = AgentPopulation(screen, (600, 450), fruits, config)
 
-forwards_per_generation = 5 * FPS
+forwards_per_generation = 6 * FPS
 forwards_this_generation = 0
 generation = 0
 # speed_multiplier: int = 1 # todo: use speed multiplier
+
+reached_all_goals = False
 
 running = True
 while running:
@@ -43,14 +45,15 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 running = False
 
-    if forwards_this_generation >= forwards_per_generation:
+    if (forwards_this_generation >= forwards_per_generation) or reached_all_goals:
         for fruit in fruits:
-            fruit.position = (random.randint(100, 1100), random.randint(100, 800))
+            fruit.position = (random.randint(700, 1100), random.randint(100, 800))
 
-        agent_population.reproduce()
+        agent_population.reproduce(screen)
 
         generation += 1
         forwards_this_generation = 0
+        reached_all_goals = False
         print("Current generation:", generation)
 
     screen.fill((26, 26, 26))
@@ -58,7 +61,12 @@ while running:
     for fruit in fruits:
         fruit.draw()
 
-    agent_population.forward(forwards_this_generation)
+    ola = agent_population.forward(forwards_this_generation)
+    
+    if not ola:
+        print("All goals reached in generation", generation)
+        reached_all_goals = True
+    
     forwards_this_generation += 1
 
     pygame.display.flip()
