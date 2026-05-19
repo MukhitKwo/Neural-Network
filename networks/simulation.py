@@ -34,8 +34,6 @@ forwards_this_generation = 0
 generation = 0
 # speed_multiplier: int = 1 # todo: use speed multiplier
 
-reached_all_goals = False
-
 running = True
 while running:
 
@@ -46,7 +44,7 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 running = False
 
-    if (forwards_this_generation >= forwards_per_generation) or reached_all_goals:
+    if forwards_this_generation >= forwards_per_generation:
         for fruit in fruits:
             fruit.position = (random.randint(100, 1100), random.randint(100, 800))
 
@@ -54,7 +52,6 @@ while running:
 
         generation += 1
         forwards_this_generation = 0
-        reached_all_goals = False
         print("Current generation:", generation)
 
     screen.fill((26, 26, 26))
