@@ -16,7 +16,7 @@ clock = pygame.time.Clock()
 FPS = 60
 
 # todo: convert to population class
-fruits = [Fruit(screen, (random.randint(700, 1100), random.randint(100, 800))) for _ in range(2)]
+fruits = [Fruit(screen, (random.randint(100, 1100), random.randint(100, 800))) for _ in range(20)]
 
 config = NeuralNetworkConfig(
     number_inputs=3,
@@ -24,6 +24,7 @@ config = NeuralNetworkConfig(
     max_speed=5,
     max_degrees=360,
     mutation_rate=0.02,
+    mutation_prob=0.2
 )
 agent_population = AgentPopulation(screen, (600, 450), fruits, 100, config)
 
@@ -46,7 +47,7 @@ while running:
 
     if (forwards_this_generation >= forwards_per_generation) or reached_all_goals:
         for fruit in fruits:
-            fruit.position = (random.randint(700, 1100), random.randint(100, 800))
+            fruit.position = (random.randint(100, 1100), random.randint(100, 800))
 
         agent_population.reproduce(screen)
 
