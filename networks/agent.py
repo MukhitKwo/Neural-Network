@@ -1,3 +1,5 @@
+import copy
+
 import pygame
 from neural_network import NeuralNetwork
 import random
@@ -11,9 +13,9 @@ class OutputValues:
 
 
 class Agent(NeuralNetwork):
-    def __init__(self, screen, position, goals, config):
+    def __init__(self, screen, position, goals, config, generate_hidden_layers=True):
         self.screen = screen
-        super().__init__(config)
+        super().__init__(config, generate_hidden_layers)
         self.position = position
         self.outside_of_window = False
         self.remaining_goals = goals.copy()
@@ -31,10 +33,10 @@ class Agent(NeuralNetwork):
         if self.closest_goal is None:
             return
         
-        input_layer = self.input_layer()
-        last_hidden_layer = self.forward(input_layer)
-        output_layer = self.output_layer(last_hidden_layer)
-        self.set_player_position(output_layer)
+        input_vector = self.set_input_vector()
+        last_hidden_vector = self.forward(input_vector)
+        output_vector = self.get_output_vector(last_hidden_vector)
+        self.set_player_position(output_vector)
         self.did_collide_with_goal(frame)
 
     def get_closest_goal(self):
@@ -56,17 +58,17 @@ class Agent(NeuralNetwork):
 
         return closest_goal
 
-    def input_layer(self):
+    def set_input_vector(self):
         goal_pos = self.closest_goal.position
         dx = (goal_pos[0] - self.position[0]) / 800  # get x distance and normalize it to -1 and 1
         dy = (goal_pos[1] - self.position[1]) / 600  # same for y
         dist = math.sqrt(dx**2 + dy**2)  # get the distance already normalized due to dx and dy
 
-        values = [dx / dist, dy/dist, 1 / (1 + dist)]
+        inputs = [dx / dist, dy/dist, 1 / (1 + dist)]
 
-        return values
+        return inputs
 
-    def output_layer(self, last_hidden_layer):
+    def get_output_vector(self, last_hidden_layer):
         angle = (last_hidden_layer[0] + 1) / 2 * self.max_degrees  # convert normilizaed value to angle
         speed = (last_hidden_layer[1] + 1) / 2 * self.max_speed  # convert normalized value to speed
 
@@ -100,9 +102,9 @@ class Agent(NeuralNetwork):
         if self.closest_goal is None:
             return
         p1 = self.position
-        p2 = self.closest_goal.position  # todo: only checks to closest goal, not all
+        p2 = self.closest_goal.position  # TODO: only checks to closest goal, not all
         distance = math.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
         self.fitness += 1 / (distance + 1)
 
-    def inherit_weights(self, best_player_hidden_layer_parameters):
-        self.hidden_layer_parameters = best_player_hidden_layer_parameters
+    def inherit_hidden_layers(self, best_player_hidden_layer_parameters):
+        self.hidden_layers = copy.deepcopy(best_player_hidden_layer_parameters) # TODO: agent generates hidden layers for nothing

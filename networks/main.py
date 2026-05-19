@@ -26,6 +26,7 @@ config = NeuralNetworkConfig(
     mutation_rate=0.02,
     mutation_prob=0.2
 )
+
 agent_population = AgentPopulation(screen, (600, 450), fruits, 100, config)
 
 forwards_per_generation = 6 * FPS

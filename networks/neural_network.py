@@ -5,9 +5,9 @@ from neural_network_config import NeuralNetworkConfig
 
 
 class NeuralNetwork:
-    def __init__(self, config: NeuralNetworkConfig):
+    def __init__(self, config: NeuralNetworkConfig, generate_hidden_layers):
         self.number_inputs = config.number_inputs
-        self.hidden_layer_parameters = self.set_initial_parameters(config.hidden_layer_dimensions)
+        self.hidden_layers = self.set_initial_parameters(config.hidden_layer_dimensions) if generate_hidden_layers else None
         self.mutation_rate = config.mutation_rate
         self.mutation_prob = config.mutation_prob
 
@@ -19,37 +19,37 @@ class NeuralNetwork:
         def generate_random_biases(size):
             return np.random.uniform(-1, 1, size)  # generate a list of random bias between -1 and 1
 
-        params = []
+        hidden_layers = []
         for layer, dimension in enumerate(layer_dimensions):
             weights = generate_random_weights(dimension, layer_dimensions[layer - 1] if layer > 0 else self.number_inputs)  # x neurons, x inputs
             bias = generate_random_biases(dimension)  # x neurons
-            params.append([weights, bias])
+            hidden_layers.append([weights, bias])
 
-        return params
+        return hidden_layers
 
-    def forward(self, input_layer):
+    def forward(self, input_vector):
         # calculates each layer based on the previous layer
-        previous_activation_layer = self.calculate_activation(input_layer, self.hidden_layer_parameters[0][0], self.hidden_layer_parameters[0][1])
-        for l in range(1, len(self.hidden_layer_parameters)):
-            previous_activation_layer = self.calculate_activation(
-                previous_activation_layer, self.hidden_layer_parameters[l][0], self.hidden_layer_parameters[l][1])
+        previous_activation_vector = self.calculate_activation(input_vector, self.hidden_layers[0][0], self.hidden_layers[0][1])
+        
+        for l in range(1, len(self.hidden_layers)):
+            previous_activation_vector = self.calculate_activation(previous_activation_vector, self.hidden_layers[l][0], self.hidden_layers[l][1])
 
-        return previous_activation_layer
+        return previous_activation_vector
 
     def calculate_activation(self, inputs, weights, biases):
-        # sums the weights and biases and normalizes them betwen -1 and 1
-        raw_sum = np.dot(weights, inputs)  # * need to understand exactly how dot product works
-        final_sum = raw_sum + biases
+        # sums the weights and biases and "activates" them betwen -1 and 1
+        weights_sum = np.dot(weights, inputs)  # * need to understand exactly how dot product works
+        total_sum = weights_sum + biases
 
-        activation = [math.tanh(v) for v in final_sum]  # normalize
+        activated_vector = np.tanh(total_sum)
 
-        return activation
+        return activated_vector
 
     def mutate(self):
         # has a probability to add a small random noise to the weights and biases
-        rate = self.mutation_rate
-        for layer in self.hidden_layer_parameters:
-            w_mask = np.random.random(layer[0].shape) < self.mutation_prob
-            b_mask = np.random.random(layer[1].shape) < self.mutation_prob
-            layer[0] += w_mask * np.random.normal(0, scale=rate, size=layer[0].shape)
-            layer[1] += b_mask * np.random.normal(0, scale=rate, size=layer[1].shape)
+        for layer in self.hidden_layers:
+            weights_prob_mask = np.random.random(layer[0].shape) < self.mutation_prob
+            biases_prob_mask = np.random.random(layer[1].shape) < self.mutation_prob
+            
+            layer[0] += weights_prob_mask * np.random.normal(0, scale=self.mutation_rate, size=layer[0].shape)
+            layer[1] += biases_prob_mask * np.random.normal(0, scale=self.mutation_rate, size=layer[1].shape)
