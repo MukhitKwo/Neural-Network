@@ -58,6 +58,7 @@ while running:
 
             generation += 1
             forwards_this_generation = 0
+            
             print(f"{31 * '='}")
             print("Generation:", generation)
             print("Speed Mult:", speed_multiplier)
@@ -70,13 +71,13 @@ while running:
         agent_population.forward(forwards_this_generation)
 
         forwards_this_generation += 1
+        
+        fps = clock.get_fps()
+        print(f"Forwards: {forwards_this_generation}/{forwards_per_generation} | FPS: {fps:.2f}", end="\r")
 
     pygame.display.flip()
 
     clock.tick(FPS)
-    fps = clock.get_fps()
-    if forwards_this_generation % 10 == 0:
-        print(f"FPS: {fps:.2f}", end="\r")
 
 pygame.quit()
 sys.exit()
