@@ -28,10 +28,12 @@ class Agent(NeuralNetwork):
         pygame.draw.circle(self.screen, self.color, self.position, self.radius)
 
     def update(self, frame):
+        if self.closest_goal is None:
+            return
+        
         input_layer = self.input_layer()
         last_hidden_layer = self.forward(input_layer)
         output_layer = self.output_layer(last_hidden_layer)
-        self.is_outside_of_window()
         self.set_player_position(output_layer)
         self.did_collide_with_goal(frame)
 
@@ -80,10 +82,6 @@ class Agent(NeuralNetwork):
 
         self.position = new_position
 
-    def is_outside_of_window(self):
-        if self.position[0] < 0 or self.position[0] > 1200 or self.position[1] < 0 or self.position[1] > 900:
-            self.outside_of_window = True
-
     def did_collide_with_goal(self, frame):
         for goal in self.remaining_goals:
             p1 = self.position
@@ -97,7 +95,7 @@ class Agent(NeuralNetwork):
                 
                 if self.closest_goal is None:
                     self.fitness += 1000
-                                     
+
     def fitness_proximity_to_goal(self):
         if self.closest_goal is None:
             return
@@ -106,8 +104,5 @@ class Agent(NeuralNetwork):
         distance = math.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
         self.fitness += 1 / (distance + 1)
 
-    def inherit_best_agent(self, start_position, best_player_hidden_layer_parameters, goals):
-        self.position = start_position
+    def inherit_weights(self, best_player_hidden_layer_parameters):
         self.hidden_layer_parameters = best_player_hidden_layer_parameters
-        self.remaining_goals = goals.copy()
-        self.fitness = 0
