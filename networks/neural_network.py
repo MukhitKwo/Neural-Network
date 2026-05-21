@@ -5,11 +5,11 @@ from neural_network_config import NeuralNetworkConfig
 
 
 class NeuralNetwork:
-    def __init__(self, config: NeuralNetworkConfig, generate_hidden_layers):
-        self.number_inputs = config.number_inputs
-        self.hidden_layers = self.set_initial_parameters(config.hidden_layer_dimensions) if generate_hidden_layers else None
-        self.mutation_rate = config.mutation_rate
-        self.mutation_prob = config.mutation_prob
+    def __init__(self, neuralNetwork_config: NeuralNetworkConfig, generate_hidden_layers):
+        self.number_inputs = neuralNetwork_config.number_inputs
+        self.hidden_layers = self.set_initial_parameters(neuralNetwork_config.hidden_layer_dimensions) if generate_hidden_layers else None
+        self.mutation_rate = neuralNetwork_config.mutation_rate
+        self.mutation_prob = neuralNetwork_config.mutation_prob
 
     def set_initial_parameters(self, layer_dimensions):
         # generates random weights and biases
