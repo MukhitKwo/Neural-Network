@@ -2,7 +2,7 @@ import random
 
 import pygame
 import sys
-from goal import Goal
+from goal import GoalPopulation
 from agent_population import AgentPopulation
 from configs import Position, SimulationConfig
 
@@ -18,10 +18,10 @@ FPS = 60
 config = SimulationConfig()
 
 # todo: convert to population class
-goals = [Goal(screen, Position(random.randint(100, 1100), random.randint(100, 800))) for _ in range(20)]
-agents = AgentPopulation(screen, goals, 100, Position(600, 450), config)
+goals = GoalPopulation(screen, 10)
+agents = AgentPopulation(screen, goals.population, 100, Position(600, 450), config)
 
-forwards_per_generation: int = 6 * FPS
+steps_per_generation: int = 6 * FPS
 steps_this_generation: int = 0
 generation: int = 0
 speed_multiplier: int = 1
@@ -42,11 +42,10 @@ while running:
 
     for s in range(speed_multiplier):
 
-        if steps_this_generation >= forwards_per_generation:
-            for fruit in goals:
-                fruit.position = Position(random.randint(100, 1100), random.randint(100, 800))
-
-            agents.reproduce(screen)
+        if steps_this_generation >= steps_per_generation:
+            agents.reproduce()
+            
+            goals.randomize_position()
 
             generation += 1
             steps_this_generation = 0
@@ -57,15 +56,14 @@ while running:
 
         screen.fill((26, 26, 26))
 
-        for fruit in goals:
-            fruit.draw()
+        goals.draw()
 
         agents.forward(steps_this_generation)
 
         steps_this_generation += 1
 
         fps = clock.get_fps()
-        print(f"Forwards: {steps_this_generation}/{forwards_per_generation} | FPS: {fps:.2f}", end="\r")
+        print(f"Forwards: {steps_this_generation}/{steps_per_generation} | FPS: {fps:.2f}", end="\r")
 
     pygame.display.flip()
 

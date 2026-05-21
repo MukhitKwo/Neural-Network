@@ -31,14 +31,14 @@ class Agent(NeuralNetwork):
         if self.closest_goal is None:
             return
 
-        input_vector = self.set_input_vector()
+        input_vector = self.get_input_vector()
         last_hidden_vector = self.forward(input_vector)
         output_vector = self.get_output_vector(last_hidden_vector)
         self.set_player_position(output_vector)
         self.did_collide_with_goal(frame)
         self.check_proximity_to_goal()
 
-    def set_input_vector(self):
+    def get_input_vector(self):
         goal_pos = self.closest_goal.position
         dx = (goal_pos.x - self.position.x) / 800  # get x distance and normalize it to -1 and 1
         dy = (goal_pos.y - self.position.y) / 600  # same for y
@@ -90,7 +90,7 @@ class Agent(NeuralNetwork):
 
         distance = self.get_distance(self.position, self.closest_goal.position)
 
-        self.fitness += (1 / (distance + 1e-3)) * self.agent_config.fitness.closeness_multiplier
+        self.fitness += (1 / (distance + 1e-3)) * self.agent_config.fitness.proximity_multiplier
 
     def inherit_hidden_layers(self, best_player_hidden_layer_parameters):
         self.hidden_layers = copy.deepcopy(best_player_hidden_layer_parameters)

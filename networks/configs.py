@@ -7,8 +7,8 @@ class NeuralNetworkConfig:
 
 
 class FitnessConfig:
-    def __init__(self, closeness_multiplier: float, time_bonus_multiplier: int, goals_reached_multiplier: int):
-        self.closeness_multiplier = closeness_multiplier
+    def __init__(self, proximity_multiplier: float, time_bonus_multiplier: int, goals_reached_multiplier: int):
+        self.proximity_multiplier = proximity_multiplier
         self.time_bonus_multiplier = time_bonus_multiplier
         self.goals_reached_multiplier = goals_reached_multiplier
 
@@ -31,7 +31,7 @@ class SimulationConfig:  # TODO: convert to json
             max_speed=10,
             max_degrees=360,
             fitness=FitnessConfig(
-                closeness_multiplier=0.1,
+                proximity_multiplier=0.1,
                 time_bonus_multiplier=10,
                 goals_reached_multiplier=100),
         )

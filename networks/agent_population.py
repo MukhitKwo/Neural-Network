@@ -6,6 +6,7 @@ from configs import Position
 
 class AgentPopulation:
     def __init__(self, screen, goals, population_size, start_position: Position, config):
+        self.screen = screen
         self.config = config
         self.start_position = start_position
         self.population_size = population_size
@@ -17,7 +18,7 @@ class AgentPopulation:
             player.update(step)
             player.draw()
 
-    def reproduce(self, screen):  # TODO: refactor ts
+    def reproduce(self):  # TODO: refactor ts
 
         best_agent = None
 
@@ -31,7 +32,7 @@ class AgentPopulation:
         self.population = []
 
         for a in range(self.population_size):
-            agent = Agent(screen, self.start_position, self.goals, self.config, False)
+            agent = Agent(self.screen, self.start_position, self.goals, self.config, False)
             agent.inherit_hidden_layers(best_hidden_layer)
 
             self.population.append(agent)
