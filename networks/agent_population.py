@@ -1,14 +1,13 @@
-from math import log
-import random
-
 from agent import Agent
 import copy
 
+from configs import Position
+
 
 class AgentPopulation:
-    def __init__(self, screen, goals, population_size, config):
+    def __init__(self, screen, goals, population_size, start_position: Position, config):
         self.config = config
-        self.start_position = config.agent.start_position
+        self.start_position = start_position
         self.population_size = population_size
         self.population = [Agent(screen, self.start_position, goals, config, True) for _ in range(self.population_size)]
         self.goals = goals

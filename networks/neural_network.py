@@ -1,7 +1,5 @@
-import math
 import numpy as np
-import copy
-from neural_network_config import NeuralNetworkConfig
+from configs import NeuralNetworkConfig
 
 
 class NeuralNetwork:

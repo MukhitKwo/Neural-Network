@@ -2,9 +2,9 @@ import random
 
 import pygame
 import sys
-from fruit import Fruit
+from goal import Goal
 from agent_population import AgentPopulation
-from neural_network_config import SimulationConfig
+from configs import Position, SimulationConfig
 
 pygame.init()
 
@@ -18,8 +18,8 @@ FPS = 60
 config = SimulationConfig()
 
 # todo: convert to population class
-fruits = [Fruit(screen, (random.randint(100, 1100), random.randint(100, 800))) for _ in range(20)]
-agents = AgentPopulation(screen, fruits, 100, config)
+goals = [Goal(screen, Position(random.randint(100, 1100), random.randint(100, 800))) for _ in range(20)]
+agents = AgentPopulation(screen, goals, 100, Position(600, 450), config)
 
 forwards_per_generation: int = 6 * FPS
 steps_this_generation: int = 0
@@ -43,8 +43,8 @@ while running:
     for s in range(speed_multiplier):
 
         if steps_this_generation >= forwards_per_generation:
-            for fruit in fruits:
-                fruit.position = (random.randint(100, 1100), random.randint(100, 800))
+            for fruit in goals:
+                fruit.position = Position(random.randint(100, 1100), random.randint(100, 800))
 
             agents.reproduce(screen)
 
@@ -57,7 +57,7 @@ while running:
 
         screen.fill((26, 26, 26))
 
-        for fruit in fruits:
+        for fruit in goals:
             fruit.draw()
 
         agents.forward(steps_this_generation)

@@ -15,7 +15,6 @@ class FitnessConfig:
 
 class AgentConfig:
     def __init__(self, max_speed: float, max_degrees: int, fitness: FitnessConfig):
-        self.start_position = (600, 450)
         self.max_speed = max_speed
         self.max_degrees = max_degrees
         self.fitness = fitness
@@ -36,3 +35,12 @@ class SimulationConfig:  # TODO: convert to json
                 time_bonus_multiplier=20,
                 goals_reached_multiplier=100),
         )
+
+class Position:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    @property
+    def xy(self):
+        return (self.x, self.y)
