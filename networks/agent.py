@@ -65,11 +65,11 @@ class Agent(NeuralNetwork):
         self.position = new_position
 
     def get_closest_goal(self):
-        closest_distance = None
-        closest_goal = None
-
         if len(self.remaining_goals) == 0:
             return None
+
+        closest_distance = None
+        closest_goal = None
 
         for goal in self.remaining_goals:
             goal_pos = goal.position

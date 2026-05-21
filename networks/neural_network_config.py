@@ -3,7 +3,7 @@ class NeuralNetworkConfig:
         self.number_inputs = number_inputs
         self.hidden_layer_dimensions = hidden_layer_dimensions
         self.mutation_rate = mutation_rate
-        self.mutation_prob = mutation_prob
+        self.mutation_probability = mutation_prob
 
 
 class FitnessConfig:
