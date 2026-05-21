@@ -15,7 +15,7 @@ class OutputValues:
 class Agent(NeuralNetwork):
     def __init__(self, screen, position: Position, goals, config, generate_hidden_layers=True):
         self.screen = screen
-        super().__init__(config.neuralNetwork, generate_hidden_layers)
+        super().__init__(config.network, generate_hidden_layers)
         self.agent_config = config.agent
         self.position = position
         self.remaining_goals = goals.copy()
@@ -57,7 +57,7 @@ class Agent(NeuralNetwork):
     def set_player_position(self, output_values: OutputValues):
         # get the postion of the player based on angle and speed
         angle_rad = math.radians(output_values.angle)
-        
+
         new_position = Position(
             self.position.x + math.cos(angle_rad) * output_values.speed,
             self.position.y + math.sin(angle_rad) * output_values.speed
@@ -65,33 +65,22 @@ class Agent(NeuralNetwork):
 
         self.position = new_position
 
+    def get_distance(self, pos_1, pos_2):
+        return math.sqrt((pos_2.x - pos_1.x)**2 + (pos_2.y - pos_1.y)**2)
+
     def get_closest_goal(self):
         if len(self.remaining_goals) == 0:
             return None
 
-        closest_distance = None
-        closest_goal = None
-
-        for goal in self.remaining_goals:
-            raw_dx = (goal.position.x - self.position.x)
-            raw_dy = (goal.position.y - self.position.y)
-            raw_dist = math.sqrt(raw_dx**2 + raw_dy**2)
-
-            if closest_distance is None or raw_dist < closest_distance:
-                closest_distance = raw_dist
-                closest_goal = goal
-
-        return closest_goal
+        return min(self.remaining_goals, key=(lambda goal: self.get_distance(self.position, goal.position)))
 
     def did_collide_with_goal(self, step):
         for goal in self.remaining_goals:
-            agent_pos = self.position
-            goal_pos = goal.position
-            distance = math.sqrt((goal_pos.x - agent_pos.x)**2 + (goal_pos.y - agent_pos.y)**2)
+            distance = self.get_distance(self.position, goal.position)
 
             if distance < self.radius:
                 T = 360
-                self.fitness += self.agent_config.fitness.goals_reached_multiplier + ((T - step)/360) * self.agent_config.fitness.time_bonus_multiplier
+                self.fitness += self.agent_config.fitness.goals_reached_multiplier + ((T - step)/T) * self.agent_config.fitness.time_bonus_multiplier
                 self.remaining_goals.remove(goal)
                 self.closest_goal = self.get_closest_goal()
 
@@ -99,10 +88,8 @@ class Agent(NeuralNetwork):
         if self.closest_goal is None:
             return
 
-        p1 = self.position
-        p2 = self.closest_goal.position
-        distance = math.sqrt((p2.x - p1.x)**2 + (p2.y - p1.y)**2)
-        
+        distance = self.get_distance(self.position, self.closest_goal.position)
+
         self.fitness += (1 / (distance + 1e-3)) * self.agent_config.fitness.closeness_multiplier
 
     def inherit_hidden_layers(self, best_player_hidden_layer_parameters):

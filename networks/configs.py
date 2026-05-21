@@ -21,7 +21,7 @@ class AgentConfig:
 
 class SimulationConfig:  # TODO: convert to json
     def __init__(self):
-        self.neuralNetwork = NeuralNetworkConfig(
+        self.network = NeuralNetworkConfig(
             number_inputs=3,
             hidden_layer_dimensions=[8, 6, 4],
             mutation_rate=0.02,
@@ -31,8 +31,8 @@ class SimulationConfig:  # TODO: convert to json
             max_speed=10,
             max_degrees=360,
             fitness=FitnessConfig(
-                closeness_multiplier=0.5,
-                time_bonus_multiplier=20,
+                closeness_multiplier=0.1,
+                time_bonus_multiplier=10,
                 goals_reached_multiplier=100),
         )
 
@@ -44,3 +44,7 @@ class Position:
     @property
     def xy(self):
         return (self.x, self.y)
+    
+    def set_xy(self, x, y):
+        self.x += x
+        self.y += y
