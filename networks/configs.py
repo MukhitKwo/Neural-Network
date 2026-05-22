@@ -24,8 +24,8 @@ class SimulationConfig:  # TODO: convert to json
         self.network = NeuralNetworkConfig(
             number_inputs=3,
             hidden_layer_dimensions=[8, 6, 4],
-            mutation_rate=0.02,
-            mutation_prob=0.2
+            mutation_rate=0.1,
+            mutation_prob=0.1
         )
         self.agent = AgentConfig(
             max_speed=10,

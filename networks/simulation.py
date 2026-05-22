@@ -17,11 +17,10 @@ FPS = 60
 
 config = SimulationConfig()
 
-# todo: convert to population class
-goals = GoalPopulation(screen, 10)
+goals = GoalPopulation(screen, 3)
 agents = AgentPopulation(screen, goals.population, 100, Position(600, 450), config)
 
-steps_per_generation: int = 6 * FPS
+steps_per_generation: int = 10 * FPS
 steps_this_generation: int = 0
 generation: int = 0
 speed_multiplier: int = 1

@@ -1,3 +1,5 @@
+import random
+
 from agent import Agent
 import copy
 
@@ -18,24 +20,29 @@ class AgentPopulation:
             player.update(step)
             player.draw()
 
-    def reproduce(self):  # TODO: refactor ts
+    def reproduce(self):
 
-        best_agent = None
+        new_population = []
 
-        for agent in self.population:
-            if agent.fitness > (best_agent.fitness if best_agent else 0):
-                best_agent = agent
+        for _ in range(self.population_size - 5):
+            sample = random.sample(self.population, 10)
 
-        print("Best fitness:", best_agent.fitness)
+            best_agent = max(sample, key=(lambda agent: agent.fitness))
+            
+            new_agent = Agent(self.screen, self.start_position, self.goals, self.config, False)
+            new_agent.inherit_hidden_layers(best_agent.hidden_layers)
 
-        best_hidden_layer = copy.deepcopy(best_agent.hidden_layers)
-        self.population = []
+            new_agent.mutate()
+            
+            new_population.append(new_agent)
+            
 
-        for a in range(self.population_size):
-            agent = Agent(self.screen, self.start_position, self.goals, self.config, False)
-            agent.inherit_hidden_layers(best_hidden_layer)
+        top_agents = sorted(self.population, key=lambda agent: agent.fitness, reverse=True)[:5]
+        
+        for agent in top_agents:
+            new_agent = Agent(self.screen, self.start_position, self.goals, self.config, False)
+            new_agent.inherit_hidden_layers(agent.hidden_layers)
 
-            self.population.append(agent)
-
-            if a != 0:
-                agent.mutate()
+            new_population.append(new_agent)
+        
+        self.population = new_population

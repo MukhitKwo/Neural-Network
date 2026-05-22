@@ -79,10 +79,13 @@ class Agent(NeuralNetwork):
             distance = self.get_distance(self.position, goal.position)
 
             if distance < self.radius:
-                T = 360
+                T = 600
                 self.fitness += self.agent_config.fitness.goals_reached_multiplier + ((T - step)/T) * self.agent_config.fitness.time_bonus_multiplier
                 self.remaining_goals.remove(goal)
                 self.closest_goal = self.get_closest_goal()
+                
+        if self.closest_goal is None:
+            self.color = (0, random.randint(100, 155), 0)
 
     def check_proximity_to_goal(self):
         if self.closest_goal is None:
