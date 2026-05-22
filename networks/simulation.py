@@ -17,7 +17,7 @@ FPS = 60
 
 config = SimulationConfig()
 
-goals = GoalPopulation(screen, 3)
+goals = GoalPopulation(screen, 10)
 agents = AgentPopulation(screen, goals.population, 100, Position(600, 450), config)
 
 steps_per_generation: int = 10 * FPS

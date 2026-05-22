@@ -4,7 +4,6 @@ from configs import NeuralNetworkConfig
 
 class NeuralNetwork:
     def __init__(self, network_config: NeuralNetworkConfig, generate_hidden_layers):
-        self.number_inputs = network_config.number_inputs
         self.hidden_layers = self.set_initial_parameters(network_config.hidden_layer_dimensions) if generate_hidden_layers else None
         self.mutation_rate = network_config.mutation_rate
         self.mutation_prob = network_config.mutation_probability
@@ -19,7 +18,7 @@ class NeuralNetwork:
 
         hidden_layers = []
         for layer, dimension in enumerate(layer_dimensions):
-            weights = generate_random_weights(dimension, layer_dimensions[layer - 1] if layer > 0 else self.number_inputs)  # x neurons, x inputs
+            weights = generate_random_weights(dimension, layer_dimensions[layer - 1] if layer > 0 else 3)  # x neurons, x inputs
             bias = generate_random_biases(dimension)  # x neurons
             hidden_layers.append([weights, bias])
 

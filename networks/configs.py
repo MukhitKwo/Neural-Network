@@ -1,6 +1,5 @@
 class NeuralNetworkConfig:
-    def __init__(self, number_inputs: int, hidden_layer_dimensions: list, mutation_rate: float, mutation_prob: float):
-        self.number_inputs = number_inputs
+    def __init__(self, hidden_layer_dimensions: list, mutation_rate: float, mutation_prob: float):
         self.hidden_layer_dimensions = hidden_layer_dimensions
         self.mutation_rate = mutation_rate
         self.mutation_probability = mutation_prob
@@ -22,7 +21,6 @@ class AgentConfig:
 class SimulationConfig:  # TODO: convert to json
     def __init__(self):
         self.network = NeuralNetworkConfig(
-            number_inputs=3,
             hidden_layer_dimensions=[8, 6, 4],
             mutation_rate=0.1,
             mutation_prob=0.1
