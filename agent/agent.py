@@ -1,6 +1,6 @@
 import pygame
+from agent.neural_network import NeuralNetwork
 from configs import Position
-from neural_network import NeuralNetwork
 import random
 import math
 import copy

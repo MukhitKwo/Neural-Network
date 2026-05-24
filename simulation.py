@@ -1,9 +1,7 @@
-import random
-
 import pygame
 import sys
-from goal import GoalPopulation
-from agent_population import AgentPopulation
+from goal.goal import GoalPopulation
+from agent.agent_population import AgentPopulation
 from configs import Position, SimulationConfig
 
 pygame.init()

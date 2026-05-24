@@ -1,8 +1,7 @@
 import random
 
-from agent import Agent
-import copy
 
+from agent.agent import Agent
 from configs import Position
 
 
