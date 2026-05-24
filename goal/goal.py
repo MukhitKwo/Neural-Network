@@ -1,7 +1,6 @@
-import random
 import pygame
 from configs import load_config
-from utils import Position
+from utils import Position, get_random_position
 
 config = load_config()
 
@@ -20,11 +19,11 @@ class GoalPopulation():
     def __init__(self, screen):
         self.screen = screen
         self.population_size = config["simulation"]["goal_population_size"]
-        self.population = [Goal(screen, Position(random.randint(100, 1100), random.randint(100, 800))) for _ in range(self.population_size)]
+        self.population = [Goal(screen, get_random_position(100)) for _ in range(self.population_size)]
 
     def randomize_position(self):
         for goal in self.population:
-            goal.position = Position(random.randint(100, 1100), random.randint(100, 800))
+            goal.position = get_random_position(100)
 
     def draw(self):
         for goal in self.population:

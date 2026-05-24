@@ -6,7 +6,6 @@ import math
 import copy
 from utils import OutputValues, Position
 
-
 config = load_config()
 
 

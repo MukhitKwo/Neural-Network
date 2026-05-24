@@ -1,17 +1,17 @@
 import random
 from agent.agent import Agent
 from configs import load_config
-from utils import Position
+from utils import get_random_position
 
 config = load_config()
 
 
 class AgentPopulation:
-    def __init__(self, screen, goals, start_position: Position):
+    def __init__(self, screen, goals):
         self.screen = screen
-        self.start_position = start_position
         self.population_size = config["simulation"]["agent_population_size"]
-        self.population = [Agent(screen, self.start_position, goals, True) for _ in range(self.population_size)]
+        start_position = get_random_position(300)
+        self.population = [Agent(screen, start_position, goals, True) for _ in range(self.population_size)]
         self.goals = goals
 
     def forward(self, step):
@@ -22,13 +22,15 @@ class AgentPopulation:
     def reproduce(self):
 
         new_population = []
+        
+        start_position = get_random_position(300)
 
         for _ in range(self.population_size - 5):
             sample = random.sample(self.population, 10)
 
             best_agent = max(sample, key=(lambda agent: agent.fitness))
 
-            new_agent = Agent(self.screen, self.start_position, self.goals, False)
+            new_agent = Agent(self.screen, start_position, self.goals, False)
             new_agent.inherit_hidden_layers(best_agent.hidden_layers)
 
             new_agent.mutate()
@@ -40,7 +42,7 @@ class AgentPopulation:
         print("Best Fitness:", top_agents[0].fitness)
 
         for agent in top_agents:
-            new_agent = Agent(self.screen, self.start_position, self.goals, False)
+            new_agent = Agent(self.screen, start_position, self.goals, False)
             new_agent.inherit_hidden_layers(agent.hidden_layers)
 
             new_population.append(new_agent)

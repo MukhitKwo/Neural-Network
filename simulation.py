@@ -3,7 +3,6 @@ import sys
 from goal.goal import GoalPopulation
 from agent.agent_population import AgentPopulation
 from configs import load_config
-from utils import Position
 
 config = load_config()
 
@@ -18,9 +17,8 @@ pygame.display.set_caption("Neural Network")
 clock = pygame.time.Clock()
 FPS = 60
 
-
 goals = GoalPopulation(screen)
-agents = AgentPopulation(screen, goals.population, Position(600, 450))
+agents = AgentPopulation(screen, goals.population)
 
 steps_per_generation = config["simulation"]["steps_per_generation"]
 steps_this_generation: int = 0
