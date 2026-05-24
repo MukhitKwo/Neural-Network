@@ -17,6 +17,13 @@ pygame.display.set_caption("Neural Network")
 clock = pygame.time.Clock()
 FPS = 60
 
+
+def draw_text(text, font_size, pos):
+    text_font = pygame.font.SysFont("Arial", font_size)
+    img = text_font.render(text, True, (255, 255, 255))
+    screen.blit(img, pos)
+
+
 goals = GoalPopulation(screen)
 agents = AgentPopulation(screen, goals.population)
 
@@ -24,6 +31,7 @@ steps_per_generation = config["simulation"]["steps_per_generation"]
 steps_this_generation: int = 0
 generation: int = 0
 speed_multiplier: int = 1
+previous_best_fitness = 0
 
 running = True
 while running:
@@ -42,16 +50,13 @@ while running:
     for s in range(speed_multiplier):
 
         if steps_this_generation >= steps_per_generation:
-            agents.reproduce()
+
+            previous_best_fitness = agents.reproduce()
 
             goals.randomize_position()
 
             generation += 1
             steps_this_generation = 0
-
-            print(f"{31 * '='}")
-            print("Generation:", generation)
-            print("Speed Mult:", speed_multiplier)
 
         screen.fill((26, 26, 26))
 
@@ -62,7 +67,12 @@ while running:
         steps_this_generation += 1
 
         fps = clock.get_fps()
-        print(f"Forwards: {steps_this_generation}/{steps_per_generation} | FPS: {fps:.2f}", end="\r")
+
+    draw_text(f"Generation: {generation}", 12, (20, HEIGHT - (6 * 14)))
+    draw_text(f"Steps: {steps_this_generation}/{steps_per_generation}", 12, (20, HEIGHT - (5 * 14)))
+    draw_text(f"Speed Multiplier: {speed_multiplier}", 12, (20, HEIGHT - (4 * 14)))
+    draw_text(f"Previous Best Fitness: {previous_best_fitness}", 12, (20, HEIGHT - (3 * 14)))
+    draw_text(f"FPS: {int(fps)}", 12, (20, HEIGHT - (2 * 14)))
 
     pygame.display.flip()
 

@@ -22,7 +22,7 @@ class AgentPopulation:
     def reproduce(self):
 
         new_population = []
-        
+
         start_position = get_random_position(300)
 
         for _ in range(self.population_size - 5):
@@ -39,8 +39,6 @@ class AgentPopulation:
 
         top_agents = sorted(self.population, key=lambda agent: agent.fitness, reverse=True)[:5]
 
-        print("Best Fitness:", top_agents[0].fitness)
-
         for agent in top_agents:
             new_agent = Agent(self.screen, start_position, self.goals, False)
             new_agent.inherit_hidden_layers(agent.hidden_layers)
@@ -48,3 +46,5 @@ class AgentPopulation:
             new_population.append(new_agent)
 
         self.population = new_population
+
+        return top_agents[0].fitness

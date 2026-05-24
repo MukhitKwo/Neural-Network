@@ -4,7 +4,7 @@ mutation_rate = 0.1
 mutation_probability = 0.1
 
 [agent]
-max_speed = 5
+max_speed = 10
 max_angle = 360
 
 [fitness]
@@ -17,8 +17,8 @@ top_agents = 5
 sample_size = 10
 
 [simulation]
-window_width = 1200
-window_height = 900
+window_width = 1920
+window_height = 1080
 agent_population_size = 100
-goal_population_size = 10
-steps_per_generation = 400
+goal_population_size = 20
+steps_per_generation = 600
