@@ -17,6 +17,9 @@ class AgentPopulation:
     def forward(self, step):
         for player in self.population:
             player.update(step)
+            
+    def draw(self):
+        for player in self.population:
             player.draw()
 
     def reproduce(self):

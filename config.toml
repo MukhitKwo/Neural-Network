@@ -20,5 +20,5 @@ sample_size = 10
 window_width = 1920
 window_height = 1080
 agent_population_size = 100
-goal_population_size = 20
+goal_population_size = 10
 steps_per_generation = 600
