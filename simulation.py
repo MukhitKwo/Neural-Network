@@ -2,23 +2,27 @@ import pygame
 import sys
 from goal.goal import GoalPopulation
 from agent.agent_population import AgentPopulation
-from configs import Position, SimulationConfig
+from configs import load_config
+from utils import Position
+
+config = load_config()
 
 pygame.init()
 
-WIDTH, HEIGHT = 1200, 900
+WIDTH = config["simulation"]["window_width"]
+HEIGHT = config["simulation"]["window_height"]
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Neural Network")
 
 clock = pygame.time.Clock()
 FPS = 60
 
-config = SimulationConfig()
 
-goals = GoalPopulation(screen, 10)
-agents = AgentPopulation(screen, goals.population, 100, Position(600, 450), config)
+goals = GoalPopulation(screen)
+agents = AgentPopulation(screen, goals.population, Position(600, 450))
 
-steps_per_generation: int = 10 * FPS
+steps_per_generation = config["simulation"]["steps_per_generation"]
 steps_this_generation: int = 0
 generation: int = 0
 speed_multiplier: int = 1
@@ -41,7 +45,7 @@ while running:
 
         if steps_this_generation >= steps_per_generation:
             agents.reproduce()
-            
+
             goals.randomize_position()
 
             generation += 1

@@ -1,22 +1,19 @@
 import pygame
 from agent.neural_network import NeuralNetwork
-from configs import Position
+from configs import load_config
 import random
 import math
 import copy
+from utils import OutputValues, Position
 
 
-class OutputValues:
-    def __init__(self, angle, speed):
-        self.angle = angle
-        self.speed = speed
+config = load_config()
 
 
 class Agent(NeuralNetwork):
-    def __init__(self, screen, position: Position, goals, config, generate_hidden_layers=True):
+    def __init__(self, screen, position: Position, goals, generate_hidden_layers=True):
         self.screen = screen
-        super().__init__(config.network, generate_hidden_layers)
-        self.agent_config = config.agent
+        super().__init__(generate_hidden_layers)
         self.position = position
         self.remaining_goals = goals.copy()
         self.closest_goal = self.get_closest_goal()
@@ -49,8 +46,8 @@ class Agent(NeuralNetwork):
         return inputs
 
     def get_output_vector(self, last_hidden_layer):
-        angle = (last_hidden_layer[0] + 1) / 2 * self.agent_config.max_degrees  # convert normilizaed value to angle
-        speed = (last_hidden_layer[1] + 1) / 2 * self.agent_config.max_speed  # convert normalized value to speed
+        angle = (last_hidden_layer[0] + 1) / 2 * config["agent"]["max_angle"]  # convert normilizaed value to angle
+        speed = (last_hidden_layer[1] + 1) / 2 * config["agent"]["max_speed"]  # convert normalized value to speed
 
         return OutputValues(angle, speed)
 
@@ -79,11 +76,11 @@ class Agent(NeuralNetwork):
             distance = self.get_distance(self.position, goal.position)
 
             if distance < self.radius:
-                T = 600
-                self.fitness += self.agent_config.fitness.goals_reached_multiplier + ((T - step)/T) * self.agent_config.fitness.time_bonus_multiplier
+                T = config["simulation"]["steps_per_generation"]
+                self.fitness += config["fitness"]["goals_reached_multiplier"] + ((T - step)/T) * config["fitness"]["time_bonus_multiplier"]
                 self.remaining_goals.remove(goal)
                 self.closest_goal = self.get_closest_goal()
-                
+
         if self.closest_goal is None:
             self.color = (0, random.randint(100, 155), 0)
 
@@ -93,7 +90,7 @@ class Agent(NeuralNetwork):
 
         distance = self.get_distance(self.position, self.closest_goal.position)
 
-        self.fitness += (1 / (distance + 1e-3)) * self.agent_config.fitness.proximity_multiplier
+        self.fitness += (1 / (distance + 1e-3)) * config["fitness"]["proximity_multiplier"]
 
     def inherit_hidden_layers(self, best_player_hidden_layer_parameters):
         self.hidden_layers = copy.deepcopy(best_player_hidden_layer_parameters)

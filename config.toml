@@ -1,0 +1,24 @@
+[network]
+hidden_layer_dimensions = [8, 6, 4]
+mutation_rate = 0.1
+mutation_probability = 0.1
+
+[agent]
+max_speed = 10
+max_angle = 360
+
+[fitness]
+proximity_multiplier = 0.1
+time_bonus_multiplier = 10
+goals_reached_multiplier = 100
+
+[reproduction]
+top_agents = 5
+sample_size = 10
+
+[simulation]
+window_width = 1200
+window_height = 900
+agent_population_size = 100
+goal_population_size = 10
+steps_per_generation = 600
