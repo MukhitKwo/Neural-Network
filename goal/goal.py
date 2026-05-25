@@ -18,7 +18,7 @@ class Goal:
 class GoalPopulation():
     def __init__(self, screen):
         self.screen = screen
-        self.population_size = config["simulation"]["goal_population_size"]
+        self.population_size = config["population"]["goal_population_size"]
         self.population = [Goal(screen, get_random_position(100)) for _ in range(self.population_size)]
 
     def randomize_position(self):

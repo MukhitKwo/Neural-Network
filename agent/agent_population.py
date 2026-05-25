@@ -9,7 +9,7 @@ config = load_config()
 class AgentPopulation:
     def __init__(self, screen, goals):
         self.screen = screen
-        self.population_size = config["simulation"]["agent_population_size"]
+        self.population_size = config["population"]["agent_population_size"]
         start_position = get_random_position(300)
         self.population = [Agent(screen, start_position, goals, True) for _ in range(self.population_size)]
         self.goals = goals

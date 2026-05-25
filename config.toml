@@ -17,9 +17,11 @@ goals_reached_multiplier = 100
 top_agents = 5
 sample_size = 10
 
+[population]
+agent_population_size = 100
+goal_population_size = 10
+
 [simulation]
 window_width = 1920
 window_height = 1080
-agent_population_size = 100
-goal_population_size = 10
 steps_per_generation = 800

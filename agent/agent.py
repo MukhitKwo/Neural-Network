@@ -4,7 +4,7 @@ from configs import load_config
 import random
 import math
 import copy
-from utils import AccelerationValues, OutputValues, Position
+from utils import AccelerationValues, Position
 
 config = load_config()
 
