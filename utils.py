@@ -26,3 +26,9 @@ class OutputValues:
     def __init__(self, angle, speed):
         self.angle = angle
         self.speed = speed
+        
+
+class AccelerationValues:
+    def __init__(self, ax, ay):
+        self.ax = ax
+        self.ay = ay

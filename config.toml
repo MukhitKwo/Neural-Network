@@ -1,11 +1,12 @@
 [network]
-hidden_layer_dimensions = [8, 6, 4]
-mutation_rate = 0.1
-mutation_probability = 0.1
+hidden_layer_dimensions = [8, 8, 2]
+mutation_rate = 0.2
+mutation_probability = 0.06
 
 [agent]
 max_speed = 10
-max_angle = 360
+max_angle = 60
+max_acceleration = 0.2
 
 [fitness]
 proximity_multiplier = 0.1
@@ -21,4 +22,4 @@ window_width = 1920
 window_height = 1080
 agent_population_size = 100
 goal_population_size = 10
-steps_per_generation = 600
+steps_per_generation = 800

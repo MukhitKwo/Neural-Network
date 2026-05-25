@@ -20,7 +20,7 @@ class NeuralNetwork:
 
         hidden_layers = []
         for layer, dimension in enumerate(layer_dimensions):
-            weights = generate_random_weights(dimension, layer_dimensions[layer - 1] if layer > 0 else 3)  # x neurons, x inputs
+            weights = generate_random_weights(dimension, layer_dimensions[layer - 1] if layer > 0 else 5)  # x neurons, x inputs
             bias = generate_random_biases(dimension)  # x neurons
             hidden_layers.append([weights, bias])
 

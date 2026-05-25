@@ -4,7 +4,7 @@ from configs import load_config
 import random
 import math
 import copy
-from utils import OutputValues, Position
+from utils import AccelerationValues, OutputValues, Position
 
 config = load_config()
 
@@ -16,6 +16,8 @@ class Agent(NeuralNetwork):
         self.position = position
         self.remaining_goals = goals.copy()
         self.closest_goal = self.get_closest_goal()
+        self.vx = 0
+        self.vy = 0
         self.fitness = 0
         self.color = (0, 0, random.randint(155, 255))
         self.radius = 25
@@ -40,23 +42,24 @@ class Agent(NeuralNetwork):
         dy = (goal_pos.y - self.position.y) / 600  # same for y
         dist = math.sqrt(dx**2 + dy**2)  # get the distance already normalized due to dx and dy
 
-        inputs = [dx / dist, dy/dist, 1 / (1 + dist)]
+        inputs = [dx / dist, dy/dist, 1 / (1 + dist), self.vx, self.vy]
 
         return inputs
 
     def get_output_vector(self, last_hidden_layer):
-        angle = (last_hidden_layer[0] + 1) / 2 * config["agent"]["max_angle"]  # convert normilizaed value to angle
-        speed = (last_hidden_layer[1] + 1) / 2 * config["agent"]["max_speed"]  # convert normalized value to speed
+        
+        ax = last_hidden_layer[0] * config["agent"]["max_acceleration"]
+        ay = last_hidden_layer[1] * config["agent"]["max_acceleration"]
+        
+        return AccelerationValues(ax, ay)
 
-        return OutputValues(angle, speed)
-
-    def set_player_position(self, output_values: OutputValues):
-        # get the postion of the player based on angle and speed
-        angle_rad = math.radians(output_values.angle)
-
+    def set_player_position(self, output_values: AccelerationValues):
+        self.vx += output_values.ax
+        self.vy += output_values.ay
+        
         new_position = Position(
-            self.position.x + math.cos(angle_rad) * output_values.speed,
-            self.position.y + math.sin(angle_rad) * output_values.speed
+            self.position.x + self.vx,
+            self.position.y + self.vy
         )
 
         self.position = new_position
