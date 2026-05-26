@@ -30,8 +30,9 @@ agents = AgentPopulation(screen, goals.population)
 steps_per_generation = config["simulation"]["steps_per_generation"]
 steps_this_generation: int = 0
 generation: int = 0
-speed_multiplier: int = 1
 previous_best_fitness = 0
+speed_multiplier: int = 1
+show_proximity_lines = False
 
 running = True
 while running:
@@ -46,6 +47,9 @@ while running:
                 speed_multiplier += 1 if speed_multiplier < 10 else 0
             if event.key == pygame.K_DOWN:
                 speed_multiplier -= 1 if speed_multiplier > 1 else 0
+            if event.key == pygame.K_l:
+                show_proximity_lines = not show_proximity_lines
+                
     for s in range(speed_multiplier):
 
         if steps_this_generation >= steps_per_generation:
@@ -63,6 +67,11 @@ while running:
         agents.forward(steps_this_generation)
 
     screen.fill((26, 26, 26))
+    
+    if show_proximity_lines:
+        for agent in agents.population:
+            if agent.closest_goal:
+                pygame.draw.line(screen, (64, 64, 64), agent.position.xy, agent.closest_goal.position.xy)
 
     goals.draw()
     agents.draw()

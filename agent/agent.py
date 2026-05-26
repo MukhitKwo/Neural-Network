@@ -32,7 +32,7 @@ class Agent(NeuralNetwork):
         input_vector = self.get_input_vector()
         last_hidden_vector = self.forward(input_vector)
         output_vector = self.get_output_vector(last_hidden_vector)
-        self.set_player_position(output_vector)
+        self.set_agent_position(output_vector)
         self.did_collide_with_goal(frame)
         self.check_proximity_to_goal()
 
@@ -53,7 +53,7 @@ class Agent(NeuralNetwork):
         
         return AccelerationValues(ax, ay)
 
-    def set_player_position(self, output_values: AccelerationValues):
+    def set_agent_position(self, output_values: AccelerationValues):
         self.vx += output_values.ax
         self.vy += output_values.ay
         

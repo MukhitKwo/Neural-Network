@@ -28,8 +28,8 @@ class AgentPopulation:
 
         start_position = get_random_position(300)
 
-        for _ in range(self.population_size - 5):
-            sample = random.sample(self.population, 10)
+        for _ in range(self.population_size - config["reproduction"]["top_agents"]):
+            sample = random.sample(self.population, config["reproduction"]["sample_size"])
 
             best_agent = max(sample, key=(lambda agent: agent.fitness))
 
@@ -40,7 +40,7 @@ class AgentPopulation:
 
             new_population.append(new_agent)
 
-        top_agents = sorted(self.population, key=lambda agent: agent.fitness, reverse=True)[:5]
+        top_agents = sorted(self.population, key=lambda agent: agent.fitness, reverse=True)[:config["reproduction"]["top_agents"]]
 
         for agent in top_agents:
             new_agent = Agent(self.screen, start_position, self.goals, False)

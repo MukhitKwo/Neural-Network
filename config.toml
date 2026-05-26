@@ -24,4 +24,4 @@ goal_population_size = 10
 [simulation]
 window_width = 1920
 window_height = 1080
-steps_per_generation = 800
+steps_per_generation = 1000
