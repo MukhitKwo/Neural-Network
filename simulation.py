@@ -33,6 +33,7 @@ generation: int = 0
 previous_best_fitness = 0
 speed_multiplier: int = 1
 show_proximity_lines = False
+paused = False
 
 running = True
 while running:
@@ -49,25 +50,28 @@ while running:
                 speed_multiplier -= 1 if speed_multiplier > 1 else 0
             if event.key == pygame.K_l:
                 show_proximity_lines = not show_proximity_lines
-                
-    for s in range(speed_multiplier):
+            if event.key == pygame.K_SPACE:
+                paused = not paused
+    
+    if not paused:
+        for s in range(speed_multiplier):
 
-        if steps_this_generation >= steps_per_generation:
+            if steps_this_generation >= steps_per_generation:
 
-            previous_best_fitness = agents.reproduce()
+                goals.randomize_position()
 
-            goals.randomize_position()
+                previous_best_fitness = agents.reproduce()
 
-            generation += 1
-            steps_this_generation = 0
+                generation += 1
+                steps_this_generation = 0
 
-        steps_this_generation += 1
-        fps = clock.get_fps()
+            steps_this_generation += 1
+            fps = clock.get_fps()
 
-        agents.forward(steps_this_generation)
+            agents.forward(steps_this_generation)
 
     screen.fill((26, 26, 26))
-    
+
     if show_proximity_lines:
         for agent in agents.population:
             if agent.closest_goal:
@@ -81,6 +85,9 @@ while running:
     render_text(f"Speed Multiplier: {speed_multiplier}", 12, (20, HEIGHT - (4 * 14)))
     render_text(f"Previous Best Fitness: {previous_best_fitness}", 12, (20, HEIGHT - (3 * 14)))
     render_text(f"FPS: {int(fps)}", 12, (20, HEIGHT - (2 * 14)))
+
+    if paused:
+        render_text("Paused", 24, (WIDTH / 2, 50))
 
     pygame.display.flip()
 

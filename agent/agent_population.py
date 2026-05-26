@@ -34,7 +34,7 @@ class AgentPopulation:
             best_agent = max(sample, key=(lambda agent: agent.fitness))
 
             new_agent = Agent(self.screen, start_position, self.goals, False)
-            new_agent.inherit_hidden_layers(best_agent.hidden_layers)
+            new_agent.set_hidden_layers(best_agent.hidden_layers)
 
             new_agent.mutate()
 
@@ -44,7 +44,7 @@ class AgentPopulation:
 
         for agent in top_agents:
             new_agent = Agent(self.screen, start_position, self.goals, False)
-            new_agent.inherit_hidden_layers(agent.hidden_layers)
+            new_agent.set_hidden_layers(agent.hidden_layers)
 
             new_population.append(new_agent)
 

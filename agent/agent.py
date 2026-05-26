@@ -94,5 +94,5 @@ class Agent(NeuralNetwork):
 
         self.fitness += (1 / (distance + 1e-3)) * config["fitness"]["proximity_multiplier"]
 
-    def inherit_hidden_layers(self, best_player_hidden_layer_parameters):
+    def set_hidden_layers(self, best_player_hidden_layer_parameters):
         self.hidden_layers = copy.deepcopy(best_player_hidden_layer_parameters)

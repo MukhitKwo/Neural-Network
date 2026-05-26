@@ -11,16 +11,21 @@ class NeuralNetwork:
         self.mutation_prob = config["network"]["mutation_probability"]
 
     def set_initial_parameters(self, layer_dimensions):
-        # generates random weights and biases
+        # generates random weights and biases for the initial hidden layers
         def generate_random_weights(rows, cols):
+            # generates random weights
             return np.random.uniform(-1, 1, (rows, cols))  # generate a matrix of random weights between -1 and 1
 
         def generate_random_biases(size):
+            # generates random biases
             return np.random.uniform(-1, 1, size)  # generate a list of random bias between -1 and 1
+        
+        layer_dimensions = layer_dimensions + [2]
 
         hidden_layers = []
         for layer, dimension in enumerate(layer_dimensions):
-            weights = generate_random_weights(dimension, layer_dimensions[layer - 1] if layer > 0 else 5)  # x neurons, x inputs
+            # it generates a 2d matrix of number of weights by the number of inputs
+            weights = generate_random_weights(dimension, layer_dimensions[layer - 1] if layer > 0 else 5)  # 5 due to number of inputs
             bias = generate_random_biases(dimension)  # x neurons
             hidden_layers.append([weights, bias])
 
