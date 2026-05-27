@@ -17,11 +17,16 @@ pygame.display.set_caption("Neural Network")
 clock = pygame.time.Clock()
 FPS = 60
 
+text_font = pygame.font.SysFont("Arial", 12)
 
-def render_text(text, font_size, pos):
-    text_font = pygame.font.SysFont("Arial", font_size)
+
+def render_text(text, pos, center=False):
     img = text_font.render(text, True, (255, 255, 255))
-    screen.blit(img, pos)
+    if center:
+        rect = img.get_rect(center=pos)
+        screen.blit(img, rect)
+    else:
+        screen.blit(img, pos)
 
 
 goals = GoalPopulation(screen)
@@ -33,6 +38,7 @@ generation: int = 0
 previous_best_fitness = 0
 speed_multiplier: int = 1
 show_proximity_lines = False
+show_fitness_value = False
 paused = False
 
 running = True
@@ -53,9 +59,11 @@ while running:
                 steps_this_generation += 1
             if event.key == pygame.K_l:
                 show_proximity_lines = not show_proximity_lines
+            if event.key == pygame.K_f:
+                show_fitness_value = not show_fitness_value
             if event.key == pygame.K_SPACE:
                 paused = not paused
-    
+
     if not paused:
         for s in range(speed_multiplier):
 
@@ -82,17 +90,22 @@ while running:
 
     goals.draw()
     agents.draw()
-    
-    seconds_left = ((steps_per_generation / FPS) - (steps_this_generation / FPS)) / speed_multiplier
 
-    render_text(f"Generation: {generation}", 12, (20, HEIGHT - (6 * 14)))
-    render_text(f"Steps: {steps_this_generation}/{steps_per_generation} ({seconds_left:.1f}s left)", 12, (20, HEIGHT - (5 * 14)))
-    render_text(f"Speed Multiplier: {speed_multiplier}", 12, (20, HEIGHT - (4 * 14)))
-    render_text(f"Previous Best Fitness: {previous_best_fitness}", 12, (20, HEIGHT - (3 * 14)))
-    render_text(f"FPS: {int(fps)}", 12, (20, HEIGHT - (2 * 14)))
+    if show_fitness_value:
+        for agent in agents.population:
+            render_text(f"{agent.fitness:.4f}", agent.position.xy, center=True)
 
     if paused:
-        render_text("Paused", 24, (WIDTH / 2, 50))
+        render_text("PAUSED!", (20, HEIGHT - (8 * 14)))
+
+    seconds_left = ((steps_per_generation / FPS) - (steps_this_generation / FPS)) / speed_multiplier
+
+    render_text(f"Generation: {generation}", (20, HEIGHT - (6 * 14)))
+    render_text(f"Steps: {steps_this_generation}/{steps_per_generation} ({seconds_left:.1f}s left)", (20, HEIGHT - (5 * 14)))
+    render_text(f"Speed Multiplier: {speed_multiplier}", (20, HEIGHT - (4 * 14)))
+    render_text(f"Previous Best Fitness: {previous_best_fitness}", (20, HEIGHT - (3 * 14)))
+    render_text(f"FPS: {int(fps)}", (20, HEIGHT - (2 * 14)))
+
 
     pygame.display.flip()
 
