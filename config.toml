@@ -1,27 +1,26 @@
-[network]
-hidden_layer_dimensions = [8, 8, 2]
-mutation_rate = 0.2
-mutation_probability = 0.06
-
-[agent]
-max_speed = 10
-max_angle = 60
-max_acceleration = 0.2
-
-[fitness]
-proximity_multiplier = 0.1
-time_bonus_multiplier = 10
-goals_reached_multiplier = 100
-
-[reproduction]
-top_agents = 5
-sample_size = 10
+[simulation]
+window_width = 1920
+window_height = 1080
+steps_per_generation = 600
 
 [population]
 agent_population_size = 100
 goal_population_size = 10
 
-[simulation]
-window_width = 1920
-window_height = 1080
-steps_per_generation = 1000
+[agent]
+max_acceleration = 1
+max_velocity = 10
+
+[reproduction]
+top_agents = 5
+sample_size = 10
+
+[fitness]
+proximity_multiplier = 0.001
+time_bonus_multiplier = 10
+goals_reached_multiplier = 100
+
+[network]
+hidden_layer_dimensions = [10, 8]
+mutation_rate = 0.2
+mutation_probability = 0.06

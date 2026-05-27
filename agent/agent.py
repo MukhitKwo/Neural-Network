@@ -19,11 +19,24 @@ class Agent(NeuralNetwork):
         self.vx = 0
         self.vy = 0
         self.fitness = 0
-        self.color = (0, 0, random.randint(155, 255))
+        self.color = (0, 0, 180)
         self.radius = 25
 
     def draw(self):
+        # pygame.draw.circle(self.screen, (0, 0, 255), self.position.xy, self.radius + 1)
         pygame.draw.circle(self.screen, self.color, self.position.xy, self.radius)
+
+    def update_color(self):
+        start_color = (0, 0, 180)
+        end_color = (180, 0, 0)
+
+        factor = 1 - (1 / (config["population"]["goal_population_size"] / (len(self.remaining_goals) + 1e-5)))
+
+        r = int(start_color[0] + (end_color[0] - start_color[0]) * factor)
+        g = int(start_color[1] + (end_color[1] - start_color[1]) * factor)
+        b = int(start_color[2] + (end_color[2] - start_color[2]) * factor)
+
+        self.color = (r, g, b)
 
     def update(self, frame):
         if self.closest_goal is None:
@@ -35,6 +48,7 @@ class Agent(NeuralNetwork):
         self.set_agent_position(output_vector)
         self.did_collide_with_goal(frame)
         self.check_proximity_to_goal()
+        # self.closest_goal = self.get_closest_goal()
 
     def get_input_vector(self):
         goal_pos = self.closest_goal.position
@@ -42,21 +56,26 @@ class Agent(NeuralNetwork):
         dy = (goal_pos.y - self.position.y) / 600  # same for y
         dist = math.sqrt(dx**2 + dy**2)  # get the distance already normalized due to dx and dy
 
-        inputs = [dx / dist, dy/dist, 1 / (1 + dist), self.vx, self.vy]
+        max_v = config["agent"]["max_velocity"]
+
+        inputs = [dx / dist, dy/dist, 1 / (1 + dist), self.vx / max_v, self.vy / max_v]
 
         return inputs
 
     def get_output_vector(self, last_hidden_layer):
-        
+
         ax = last_hidden_layer[0] * config["agent"]["max_acceleration"]
         ay = last_hidden_layer[1] * config["agent"]["max_acceleration"]
-        
+
         return AccelerationValues(ax, ay)
 
     def set_agent_position(self, output_values: AccelerationValues):
-        self.vx += output_values.ax
-        self.vy += output_values.ay
-        
+
+        max_v = config["agent"]["max_velocity"]
+
+        self.vx = min(self.vx + output_values.ax, max_v) if output_values.ax > 0 else max(self.vx + output_values.ax, -max_v)
+        self.vy = min(self.vy + output_values.ay, max_v) if output_values.ay > 0 else max(self.vy + output_values.ay, -max_v)
+
         new_position = Position(
             self.position.x + self.vx,
             self.position.y + self.vy
@@ -64,33 +83,34 @@ class Agent(NeuralNetwork):
 
         self.position = new_position
 
-    def get_distance(self, pos_1, pos_2):
+    def get_true_distance(self, pos_1, pos_2):
         return math.sqrt((pos_2.x - pos_1.x)**2 + (pos_2.y - pos_1.y)**2)
+
+    def get_squared_distances(self, pos_1, pos_2):
+        return (pos_2.x - pos_1.x)**2 + (pos_2.y - pos_1.y)**2
 
     def get_closest_goal(self):
         if len(self.remaining_goals) == 0:
             return None
 
-        return min(self.remaining_goals, key=(lambda goal: self.get_distance(self.position, goal.position)))
+        return min(self.remaining_goals, key=(lambda goal: self.get_squared_distances(self.position, goal.position)))
 
     def did_collide_with_goal(self, step):
         for goal in self.remaining_goals:
-            distance = self.get_distance(self.position, goal.position)
+            distance = self.get_true_distance(self.position, goal.position)
 
             if distance < self.radius:
                 T = config["simulation"]["steps_per_generation"]
                 self.fitness += config["fitness"]["goals_reached_multiplier"] + ((T - step)/T) * config["fitness"]["time_bonus_multiplier"]
                 self.remaining_goals.remove(goal)
                 self.closest_goal = self.get_closest_goal()
-
-        if self.closest_goal is None:
-            self.color = (0, random.randint(100, 155), 0)
+                self.update_color()
 
     def check_proximity_to_goal(self):
         if self.closest_goal is None:
             return
 
-        distance = self.get_distance(self.position, self.closest_goal.position)
+        distance = self.get_true_distance(self.position, self.closest_goal.position)
 
         self.fitness += (1 / (distance + 1e-3)) * config["fitness"]["proximity_multiplier"]
 

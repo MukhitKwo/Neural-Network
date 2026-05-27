@@ -48,6 +48,9 @@ while running:
                 speed_multiplier += 1 if speed_multiplier < 10 else 0
             if event.key == pygame.K_DOWN:
                 speed_multiplier -= 1 if speed_multiplier > 1 else 0
+            if event.key == pygame.K_RIGHT:
+                agents.forward(steps_per_generation)
+                steps_this_generation += 1
             if event.key == pygame.K_l:
                 show_proximity_lines = not show_proximity_lines
             if event.key == pygame.K_SPACE:
