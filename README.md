@@ -8,57 +8,11 @@ A 2D neuroevolution simulation built from scratch using Python, NumPy, and Pygam
 
 ## How It Works
 
-Each generation, a population of agents navigates a 2D environment and tries to collect all goals. Agents are controlled entirely by a neural network that takes the agent's current state as input and outputs acceleration values. No hardcoded rules or pathfinding — behavior emerges purely through evolution.
+Each generation, a population of agents navigates a 2D environment and tries to collect all goals. Agents are controlled entirely by a neural network that takes the agent's current state as input and outputs acceleration values. No hardcoded rules or pathfinding, behavior emerges purely through evolution.
 
-At the end of each generation, agents are ranked by fitness. The best agents are carried over unchanged (elitism), and the rest of the population is bred through tournament selection. Offspring inherit the weights of their selected parent, with small random mutations applied to introduce variation. This cycle repeats until the population converges on an effective strategy.
+At the end of each generation, agents are ranked by fitness. The best agents are carried over unchanged (elitism), and the rest of the population is bred through tournament selection. Offspring inherit the weights of their selected parent, with a small random mutations applied to introduce variation. This cycle repeats until the population converges on an effective strategy.
 
 Goals are randomized at the start of each generation, so agents must generalize rather than memorize positions.
-
----
-
-## Math
-
-### MLP Forward Pass
-
-Each layer computes a weighted sum of its inputs, adds a bias, and passes the result through a tanh activation function:
-
-$$a^{(l)} = \tanh(W^{(l)} \cdot a^{(l-1)} + b^{(l)})$$
-
-Where:
-- $W^{(l)}$ is the weight matrix for layer $l$
-- $b^{(l)}$ is the bias vector for layer $l$
-- $a^{(l-1)}$ is the activation from the previous layer (or the input vector for $l=1$)
-
-The network takes 5 inputs and produces 2 outputs ($a_x$, $a_y$):
-
-| Input | Description |
-|---|---|
-| $dx / \|d\|$ | Normalized x direction to closest goal |
-| $dy / \|d\|$ | Normalized y direction to closest goal |
-| $1 / (1 + \|d\|)$ | Proximity to closest goal |
-| $v_x$ | Current x velocity |
-| $v_y$ | Current y velocity |
-
-### Fitness Function
-
-Fitness is accumulated over the course of a generation:
-
-$$F = \sum_{\text{goals collected}} \left( R_{\text{goal}} + \frac{T - t}{T} \cdot R_{\text{time}} \right) + \sum_{\text{steps}} \min\left( \frac{P}{d + \epsilon},\ P_{\text{max}} \right)$$
-
-Where:
-- $R_{\text{goal}}$ is the flat reward for collecting a goal
-- $T$ is the total steps per generation, $t$ is the step at which the goal was collected
-- $R_{\text{time}}$ is the time bonus multiplier (rewards collecting goals early)
-- $P$ is the proximity multiplier, $d$ is the distance to the closest goal
-- $P_{\text{max}}$ is the per-step proximity cap (prevents orbiters from accumulating fitness without collecting)
-
-### Mutation
-
-Each weight and bias has an independent probability $p_m$ of being mutated. When selected, a value sampled from a Gaussian distribution is added:
-
-$$w \leftarrow w + \mathcal{N}(0,\ \sigma^2) \quad \text{with probability } p_m$$
-
-Where $\sigma$ is the mutation rate (standard deviation of the noise).
 
 ---
 
@@ -123,3 +77,49 @@ uv sync
 ```bash
 uv run simulation.py
 ```
+
+---
+
+## Math
+
+### MLP Forward Pass
+
+Each layer computes a weighted sum of its inputs, adds a bias, and passes the result through a tanh activation function:
+
+$$a^{(l)} = \tanh(W^{(l)} \cdot a^{(l-1)} + b^{(l)})$$
+
+Where:
+- $W^{(l)}$ is the weight matrix for layer $l$
+- $b^{(l)}$ is the bias vector for layer $l$
+- $a^{(l-1)}$ is the activation from the previous layer (or the input vector for $l=1$)
+
+The network takes 5 inputs and produces 2 outputs ($a_x$, $a_y$):
+
+| Input | Description |
+|---|---|
+| $dx / \|d\|$ | Normalized x direction to closest goal |
+| $dy / \|d\|$ | Normalized y direction to closest goal |
+| $1 / (1 + \|d\|)$ | Proximity to closest goal |
+| $v_x$ | Current x velocity |
+| $v_y$ | Current y velocity |
+
+### Fitness Function
+
+Fitness is accumulated over the course of a generation:
+
+$$F = \sum_{\text{goals collected}} \left( R_{\text{goal}} + \frac{T - t}{T} \cdot R_{\text{time}} \right) + \sum_{\text{steps}} \min\left( \frac{P}{d + \epsilon},\ P_{\text{max}} \right)$$
+
+Where:
+- $R_{\text{goal}}$ is the flat reward for collecting a goal
+- $T$ is the total steps per generation, $t$ is the step at which the goal was collected
+- $R_{\text{time}}$ is the time bonus multiplier (rewards collecting goals early)
+- $P$ is the proximity multiplier, $d$ is the distance to the closest goal
+- $P_{\text{max}}$ is the per-step proximity cap (prevents orbiters from accumulating fitness without collecting)
+
+### Mutation
+
+Each weight and bias has an independent probability $p_m$ of being mutated. When selected, a value sampled from a Gaussian distribution is added:
+
+$$w \leftarrow w + \mathcal{N}(0,\ \sigma^2) \quad \text{with probability } p_m$$
+
+Where $\sigma$ is the mutation rate (standard deviation of the noise).
