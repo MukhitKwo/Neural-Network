@@ -82,9 +82,11 @@ while running:
 
     goals.draw()
     agents.draw()
+    
+    seconds_left = ((steps_per_generation / FPS) - (steps_this_generation / FPS)) / speed_multiplier
 
     render_text(f"Generation: {generation}", 12, (20, HEIGHT - (6 * 14)))
-    render_text(f"Steps: {steps_this_generation}/{steps_per_generation}", 12, (20, HEIGHT - (5 * 14)))
+    render_text(f"Steps: {steps_this_generation}/{steps_per_generation} ({seconds_left:.1f}s left)", 12, (20, HEIGHT - (5 * 14)))
     render_text(f"Speed Multiplier: {speed_multiplier}", 12, (20, HEIGHT - (4 * 14)))
     render_text(f"Previous Best Fitness: {previous_best_fitness}", 12, (20, HEIGHT - (3 * 14)))
     render_text(f"FPS: {int(fps)}", 12, (20, HEIGHT - (2 * 14)))

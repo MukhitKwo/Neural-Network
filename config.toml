@@ -5,11 +5,11 @@ steps_per_generation = 600
 
 [population]
 agent_population_size = 100
-goal_population_size = 10
+goal_population_size = 20
 
 [agent]
-max_acceleration = 1
-max_velocity = 10
+max_acceleration = 3
+max_velocity = 20
 
 [reproduction]
 top_agents = 5
