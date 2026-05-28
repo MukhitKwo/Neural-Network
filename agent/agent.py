@@ -23,7 +23,7 @@ class Agent(NeuralNetwork):
         self.radius = 25
 
     def draw(self):
-        # pygame.draw.circle(self.screen, (0, 0, 255), self.position.xy, self.radius + 1)
+        pygame.draw.circle(self.screen, (90, 0, 90), self.position.xy, self.radius + 1)
         pygame.draw.circle(self.screen, self.color, self.position.xy, self.radius)
 
     def update_color(self):
@@ -52,8 +52,8 @@ class Agent(NeuralNetwork):
 
     def get_input_vector(self):
         goal_pos = self.closest_goal.position
-        dx = (goal_pos.x - self.position.x) / 800  # get x distance and normalize it to -1 and 1
-        dy = (goal_pos.y - self.position.y) / 600  # same for y
+        dx = (goal_pos.x - self.position.x) / config["simulation"]["window_width"]  # get x distance and normalize it to -1 and 1
+        dy = (goal_pos.y - self.position.y) / config["simulation"]["window_height"]  # same for y
         dist = math.sqrt(dx**2 + dy**2)  # get the distance already normalized due to dx and dy
 
         max_v = config["agent"]["max_velocity"]
@@ -100,8 +100,8 @@ class Agent(NeuralNetwork):
             distance = self.get_true_distance(self.position, goal.position)
 
             if distance < self.radius:
-                T = config["simulation"]["steps_per_generation"]
-                self.fitness += config["fitness"]["goals_reached_multiplier"] + ((T - step)/T) * config["fitness"]["time_bonus_multiplier"]
+                S = config["simulation"]["steps_per_generation"]
+                self.fitness += config["fitness"]["goals_reached_bonus"] + ((S - step)/S) * config["fitness"]["time_multiplier"]
                 self.remaining_goals.remove(goal)
                 self.closest_goal = self.get_closest_goal()
                 self.update_color()

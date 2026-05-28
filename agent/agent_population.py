@@ -27,6 +27,14 @@ class AgentPopulation:
         new_population = []
 
         start_position = get_random_position(300)
+        
+        top_agents = sorted(self.population, key=lambda agent: agent.fitness, reverse=True)[:config["reproduction"]["top_agents"]]
+
+        for agent in top_agents:
+            new_agent = Agent(self.screen, start_position, self.goals, False)
+            new_agent.set_hidden_layers(agent.hidden_layers)
+
+            new_population.append(new_agent)
 
         for _ in range(self.population_size - config["reproduction"]["top_agents"]):
             sample = random.sample(self.population, config["reproduction"]["sample_size"])
@@ -37,14 +45,6 @@ class AgentPopulation:
             new_agent.set_hidden_layers(best_agent.hidden_layers)
 
             new_agent.mutate()
-
-            new_population.append(new_agent)
-
-        top_agents = sorted(self.population, key=lambda agent: agent.fitness, reverse=True)[:config["reproduction"]["top_agents"]]
-
-        for agent in top_agents:
-            new_agent = Agent(self.screen, start_position, self.goals, False)
-            new_agent.set_hidden_layers(agent.hidden_layers)
 
             new_population.append(new_agent)
 
