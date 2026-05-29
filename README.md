@@ -8,7 +8,7 @@ A 2D neuroevolution simulation built from scratch using Python, NumPy, and Pygam
 
 ## How It Works
 
-Each generation, a population of agents navigates a 2D environment and tries to collect all goals. Agents are controlled entirely by a neural network that takes the agent's current state as input and outputs acceleration values. There are no hardcoded rules or pathfinding, all behavior emerges purely through evolution.
+Each generation, a population of agents navigates a 2D environment and tries to collect all goals. Agents are controlled entirely by a neural network that takes the agent's current state as input and outputs acceleration values. There are no hardcoded rules or pathfinding, all behavior emerges purely through evolution. Agents start blue and shift toward red as they collect more goals, giving a quick visual read of how well each agent is performing.
 
 At the end of each generation, agents are ranked by fitness. The best agents are carried over unchanged (elitism), and the rest of the population is bred through tournament selection. Offspring inherit the weights of their selected parent, with small random mutations applied to introduce variation. This cycle repeats generation after generation until the population converges into an effective strategy.
 
