@@ -48,13 +48,12 @@ class Agent(NeuralNetwork):
         self.set_agent_position(output_vector)
         self.did_collide_with_goal(frame)
         self.check_proximity_to_goal()
-        # self.closest_goal = self.get_closest_goal()
 
     def get_input_vector(self):
         goal_pos = self.closest_goal.position
-        dx = (goal_pos.x - self.position.x) / config["simulation"]["window_width"]  # get x distance and normalize it to -1 and 1
-        dy = (goal_pos.y - self.position.y) / config["simulation"]["window_height"]  # same for y
-        dist = math.sqrt(dx**2 + dy**2)  # get the distance already normalized due to dx and dy
+        dx = (goal_pos.x - self.position.x) / config["simulation"]["window_width"]
+        dy = (goal_pos.y - self.position.y) / config["simulation"]["window_height"]
+        dist = math.sqrt(dx**2 + dy**2)
 
         max_v = config["agent"]["max_velocity"]
 
