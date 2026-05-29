@@ -8,9 +8,9 @@ A 2D neuroevolution simulation built from scratch using Python, NumPy, and Pygam
 
 ## How It Works
 
-Each generation, a population of agents navigates a 2D environment and tries to collect all goals. Agents are controlled entirely by a neural network that takes the agent's current state as input and outputs acceleration values. There are no hardcoded rules or pathfinding; behavior emerges purely through evolution.
+Each generation, a population of agents navigates a 2D environment and tries to collect all goals. Agents are controlled entirely by a neural network that takes the agent's current state as input and outputs acceleration values. There are no hardcoded rules or pathfinding, all behavior emerges purely through evolution.
 
-At the end of each generation, agents are ranked by fitness. The best agents are carried over unchanged (elitism), and the rest of the population is bred through tournament selection. Offspring inherit the weights of their selected parent, with small random mutations applied to introduce variation. This cycle repeats until the population converges on an effective strategy.
+At the end of each generation, agents are ranked by fitness. The best agents are carried over unchanged (elitism), and the rest of the population is bred through tournament selection. Offspring inherit the weights of their selected parent, with small random mutations applied to introduce variation. This cycle repeats generation after generation until the population converges into an effective strategy.
 
 Goals are randomized at the start of each generation, so agents must generalize rather than memorize positions.
 
@@ -52,9 +52,9 @@ top_agents            # Number of elite agents carried over unchanged
 sample_size           # Tournament size for selection
 
 [fitness]
-proximity_multiplier      # Scales the per-step proximity reward
-time_multiplier     # Scales the time bonus on goal collection
-goals_reached_bonus  # Flat reward for collecting a goal
+proximity_multiplier  # Scales the per-step proximity reward
+time_multiplier       # Scales the time bonus on goal collection
+goals_reached_bonus   # Flat reward for collecting a goal
 
 [network]
 hidden_layer_dimensions  # List defining the size of each hidden layer
