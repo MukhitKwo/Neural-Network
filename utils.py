@@ -1,6 +1,10 @@
 import random
+import tomllib
 
-from configs import load_config
+
+def load_config() -> dict:
+    with open("config.toml", "rb") as f:
+        return tomllib.load(f)
 
 
 config = load_config()

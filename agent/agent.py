@@ -1,10 +1,8 @@
 import pygame
 from agent.neural_network import NeuralNetwork
-from configs import load_config
-import random
 import math
 import copy
-from utils import AccelerationValues, Position
+from utils import AccelerationValues, Position, load_config
 
 config = load_config()
 

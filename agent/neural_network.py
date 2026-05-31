@@ -1,5 +1,5 @@
 import numpy as np
-from configs import load_config
+from utils import load_config
 
 config = load_config()
 

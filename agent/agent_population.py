@@ -1,7 +1,6 @@
 import random
 from agent.agent import Agent
-from configs import load_config
-from utils import get_random_position
+from utils import get_random_position, load_config
 
 config = load_config()
 

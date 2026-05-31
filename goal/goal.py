@@ -1,6 +1,5 @@
 import pygame
-from configs import load_config
-from utils import Position, get_random_position
+from utils import Position, get_random_position, load_config
 
 config = load_config()
 

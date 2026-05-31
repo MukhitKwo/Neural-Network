@@ -2,7 +2,7 @@ import pygame
 import sys
 from goal.goal import GoalPopulation
 from agent.agent_population import AgentPopulation
-from configs import load_config
+from utils import load_config
 
 config = load_config()
 
